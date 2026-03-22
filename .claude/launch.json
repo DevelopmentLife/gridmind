@@ -1,0 +1,37 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "gridmind-site",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/gridmind-site",
+      "port": 3003,
+      "autoPort": true
+    },
+    {
+      "name": "portal",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/services/portal",
+      "port": 3001,
+      "autoPort": true
+    },
+    {
+      "name": "admin",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/services/admin",
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "superadmin",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/services/superadmin",
+      "port": 3002,
+      "autoPort": true
+    }
+  ]
+}

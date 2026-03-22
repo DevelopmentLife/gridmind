@@ -1,0 +1,88 @@
+import { Agent } from "@/types";
+
+export const agents: readonly Agent[] = [
+  {
+    name: "ARGUS",
+    displayName: "Argus",
+    icon: "\uD83D\uDC41\uFE0F",
+    description: "Continuous workload profiling and query classification across all database deployments.",
+    tier: "perception",
+  },
+  {
+    name: "ORACLE",
+    displayName: "Oracle",
+    icon: "\uD83D\uDD2E",
+    description: "Predictive capacity forecasting with 1h to 7-day horizon using exponential smoothing.",
+    tier: "perception",
+  },
+  {
+    name: "TITAN",
+    displayName: "Titan",
+    icon: "\u2696\uFE0F",
+    description: "Intelligent scaling decisions with ranked options and automatic retraction protocols.",
+    tier: "reasoning",
+  },
+  {
+    name: "PRISM",
+    displayName: "Prism",
+    icon: "\uD83D\uDD0D",
+    description: "Query optimization with index recommendations, materialized views, and HNSW tuning.",
+    tier: "reasoning",
+  },
+  {
+    name: "SHERLOCK",
+    displayName: "Sherlock",
+    icon: "\uD83D\uDD75\uFE0F",
+    description: "Root cause analysis with ranked hypotheses and evidence-chain incident reasoning.",
+    tier: "reasoning",
+  },
+  {
+    name: "AEGIS",
+    displayName: "Aegis",
+    icon: "\uD83D\uDEE1\uFE0F",
+    description: "Continuous security posture assessment including credentials, encryption, and compliance.",
+    tier: "reasoning",
+  },
+  {
+    name: "FORGE",
+    displayName: "Forge",
+    icon: "\u2692\uFE0F",
+    description: "Infrastructure provisioning via IaC with scoped IAM and automatic rollback.",
+    tier: "execution",
+  },
+  {
+    name: "CONVOY",
+    displayName: "Convoy",
+    icon: "\uD83D\uDE9A",
+    description: "Zero-downtime database migrations with pre-checks, snapshots, and canary validation.",
+    tier: "execution",
+  },
+  {
+    name: "VAULT",
+    displayName: "Vault",
+    icon: "\uD83D\uDD12",
+    description: "Automated backup and point-in-time recovery with cross-region replication.",
+    tier: "execution",
+  },
+  {
+    name: "TUNER",
+    displayName: "Tuner",
+    icon: "\uD83C\uDFB9",
+    description: "Database configuration optimization with staged rollout, dry-run, and auto-rollback.",
+    tier: "execution",
+  },
+  {
+    name: "HARBOR",
+    displayName: "Harbor",
+    icon: "\u2693",
+    description: "Guided onboarding that connects databases and activates agents in under 5 minutes.",
+    tier: "specialized",
+  },
+  {
+    name: "HERALD",
+    displayName: "Herald",
+    icon: "\uD83D\uDCE3",
+    description: "Intelligent communications across email, Slack, and PagerDuty with smart routing.",
+    tier: "specialized",
+  },
+] as const;

@@ -1,0 +1,95 @@
+import { Engine } from "@/types";
+
+export const engines: readonly Engine[] = [
+  {
+    name: "PostgreSQL",
+    icon: "\uD83D\uDC18",
+    status: "available",
+    features: [
+      "Query optimization",
+      "Auto-scaling",
+      "Backup & PITR",
+      "Security audits",
+      "Configuration tuning",
+      "Migration support",
+    ],
+  },
+  {
+    name: "MySQL",
+    icon: "\uD83D\uDDC4\uFE0F",
+    status: "coming_soon",
+    features: [
+      "Query optimization",
+      "Auto-scaling",
+      "Backup & recovery",
+      "Security audits",
+      "Configuration tuning",
+      "Migration support",
+    ],
+  },
+  {
+    name: "MongoDB",
+    icon: "\uD83C\uDF3F",
+    status: "coming_soon",
+    features: [
+      "Query optimization",
+      "Auto-scaling",
+      "Backup & recovery",
+      "Security audits",
+      "Index management",
+      "Sharding support",
+    ],
+  },
+  {
+    name: "Redis",
+    icon: "\u26A1",
+    status: "coming_soon",
+    features: [
+      "Memory optimization",
+      "Auto-scaling",
+      "Backup & recovery",
+      "Security audits",
+      "Configuration tuning",
+      "Cluster management",
+    ],
+  },
+  {
+    name: "CockroachDB",
+    icon: "\uD83E\uDEB3",
+    status: "coming_soon",
+    features: [
+      "Query optimization",
+      "Auto-scaling",
+      "Backup & recovery",
+      "Security audits",
+      "Configuration tuning",
+      "Multi-region support",
+    ],
+  },
+  {
+    name: "TimescaleDB",
+    icon: "\u23F0",
+    status: "coming_soon",
+    features: [
+      "Query optimization",
+      "Auto-scaling",
+      "Backup & recovery",
+      "Security audits",
+      "Compression tuning",
+      "Retention policies",
+    ],
+  },
+  {
+    name: "ClickHouse",
+    icon: "\uD83D\uDFE1",
+    status: "coming_soon",
+    features: [
+      "Query optimization",
+      "Auto-scaling",
+      "Backup & recovery",
+      "Security audits",
+      "MergeTree tuning",
+      "Materialized views",
+    ],
+  },
+] as const;

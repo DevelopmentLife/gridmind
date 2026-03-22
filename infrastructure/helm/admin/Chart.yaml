@@ -1,0 +1,17 @@
+apiVersion: v2
+name: admin
+description: GridMind Admin Dashboard — Next.js 15 operator panel (admin.gridmind.io)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - gridmind
+  - admin
+  - nextjs
+  - dashboard
+home: https://gridmind.io
+sources:
+  - https://github.com/assertive-mind/gridmind
+maintainers:
+  - name: PIPELINE
+    email: platform@gridmind.io

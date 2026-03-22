@@ -1,0 +1,17 @@
+apiVersion: v2
+name: gateway
+description: GridMind API Gateway — FastAPI REST + WebSocket service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - gridmind
+  - gateway
+  - fastapi
+  - api
+home: https://gridmind.io
+sources:
+  - https://github.com/assertive-mind/gridmind
+maintainers:
+  - name: PIPELINE
+    email: platform@gridmind.io

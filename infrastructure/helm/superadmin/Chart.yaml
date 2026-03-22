@@ -1,0 +1,17 @@
+apiVersion: v2
+name: superadmin
+description: GridMind Superadmin — Next.js 15 platform god-mode panel (platform.gridmind.io)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - gridmind
+  - superadmin
+  - nextjs
+  - platform
+home: https://gridmind.io
+sources:
+  - https://github.com/assertive-mind/gridmind
+maintainers:
+  - name: PIPELINE
+    email: platform@gridmind.io

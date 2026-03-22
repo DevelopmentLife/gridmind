@@ -1,0 +1,56 @@
+###############################################################################
+# gateway — Staging overrides
+###############################################################################
+
+replicaCount: 2
+
+image:
+  pullPolicy: Always
+
+ingress:
+  hosts:
+    - host: "api-staging.gridmind.io"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: gridmind-tls-wildcard
+      hosts:
+        - "api-staging.gridmind.io"
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "384Mi"
+  limits:
+    cpu: "1000m"
+    memory: "1Gi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+env:
+  ENVIRONMENT: "staging"
+  LOG_LEVEL: "INFO"
+  WORKERS: "4"
+
+vault:
+  enabled: true
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: gateway
+          topologyKey: kubernetes.io/hostname

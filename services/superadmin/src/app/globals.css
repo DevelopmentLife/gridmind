@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    @apply bg-brand-midnight text-brand-text-primary;
+    font-family: "Outfit", system-ui, sans-serif;
+  }
+
+  * {
+    @apply border-brand-border-subtle;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0a0e14;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1e2a3a;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2a3a4e;
+  }
+}
+
+@layer components {
+  /* Amber focus ring for god-mode */
+  .focus-amber {
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-amber/60;
+  }
+
+  /* Table base styles */
+  .data-table {
+    @apply w-full border-collapse;
+  }
+
+  .data-table th {
+    @apply text-brand-text-muted text-xs font-medium uppercase tracking-wide text-left px-3 py-3 border-b border-brand-border-subtle;
+  }
+
+  .data-table td {
+    @apply text-sm;
+  }
+}

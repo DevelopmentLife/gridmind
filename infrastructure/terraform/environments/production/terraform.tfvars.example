@@ -1,0 +1,33 @@
+# GridMind Production Environment — Example tfvars
+# Copy to terraform.tfvars and fill in real values. Never commit terraform.tfvars.
+# Use Vault or AWS Secrets Manager for sensitive values in CI/CD.
+
+aws_region = "us-east-1"
+
+vpc_cidr           = "10.30.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+private_subnets    = ["10.30.1.0/24", "10.30.2.0/24", "10.30.3.0/24"]
+public_subnets     = ["10.30.101.0/24", "10.30.102.0/24", "10.30.103.0/24"]
+
+route53_zone_id   = "Z0123456789EXAMPLE"
+root_domain       = "gridmind.io"
+access_log_bucket = "gridmind-alb-logs-production"
+
+# Use PagerDuty email integration for production alerts
+alert_emails = ["alerts+critical@gridmind.io"]
+
+# ALWAYS set via env var: TF_VAR_grafana_admin_password
+# Never set this in a tfvars file for production
+grafana_admin_password = ""
+
+github_org  = "assertive-mind"
+github_repo = "gridmind"
+
+# Add ops/break-glass roles here
+additional_eks_roles = [
+  # {
+  #   rolearn  = "arn:aws:iam::123456789:role/gridmind-ops-team"
+  #   username = "ops-team"
+  #   groups   = ["system:masters"]
+  # }
+]

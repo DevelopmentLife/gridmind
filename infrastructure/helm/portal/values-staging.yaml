@@ -1,0 +1,43 @@
+replicaCount: 2
+
+image:
+  pullPolicy: Always
+
+ingress:
+  hosts:
+    - host: "app-staging.gridmind.io"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: gridmind-tls-wildcard
+      hosts:
+        - "app-staging.gridmind.io"
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+env:
+  NODE_ENV: "production"
+  PORT: "3001"
+  ENVIRONMENT: "staging"
+  NEXT_TELEMETRY_DISABLED: "1"
+
+vault:
+  enabled: true

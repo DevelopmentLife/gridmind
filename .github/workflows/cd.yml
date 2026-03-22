@@ -1,0 +1,448 @@
+# =============================================================================
+# GridMind — Continuous Deployment
+# =============================================================================
+# Triggers on push to main.
+# Sequential: build+push -> staging deploy -> integration tests ->
+#   canary 5% -> 25% -> 50% -> 100% with auto-rollback.
+# =============================================================================
+
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: cd-production
+  cancel-in-progress: false  # Never cancel in-progress deployments
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  KUBE_NAMESPACE_STAGING: gridmind-staging
+  KUBE_NAMESPACE_PRODUCTION: gridmind-production
+  SERVICES: "gateway cortex admin portal superadmin"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build and Push Images to ECR
+  # ---------------------------------------------------------------------------
+  build-push:
+    name: Build & Push
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [gateway, cortex, admin, portal, superadmin]
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: meta
+        run: echo "tag=sha-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/${{ matrix.service }}
+          file: ./services/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/gridmind-${{ matrix.service }}:${{ steps.meta.outputs.tag }}
+            ${{ env.ECR_REGISTRY }}/gridmind-${{ matrix.service }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ---------------------------------------------------------------------------
+  # Security Scan + SBOM
+  # ---------------------------------------------------------------------------
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build-push
+    strategy:
+      matrix:
+        service: [gateway, cortex, admin, portal, superadmin]
+    permissions:
+      id-token: write
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ env.ECR_REGISTRY }}/gridmind-${{ matrix.service }}:sha-${{ github.sha }}"
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+
+      - name: Upload scan results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+
+  # ---------------------------------------------------------------------------
+  # Deploy to Staging
+  # ---------------------------------------------------------------------------
+  deploy-staging:
+    name: Deploy Staging
+    runs-on: ubuntu-latest
+    needs: [build-push, security-scan]
+    environment: staging
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name gridmind-staging --region ${{ env.AWS_REGION }}
+
+      - name: Deploy services to staging
+        run: |
+          IMAGE_TAG="sha-$(git rev-parse --short HEAD)"
+          for SERVICE in ${{ env.SERVICES }}; do
+            echo "Deploying $SERVICE to staging..."
+            helm upgrade --install \
+              "gridmind-${SERVICE}" \
+              "infrastructure/helm/${SERVICE}" \
+              --namespace ${{ env.KUBE_NAMESPACE_STAGING }} \
+              --set image.repository="${{ env.ECR_REGISTRY }}/gridmind-${SERVICE}" \
+              --set image.tag="${IMAGE_TAG}" \
+              --values "infrastructure/helm/${SERVICE}/values-staging.yaml" \
+              --atomic \
+              --timeout 5m \
+              --wait
+          done
+
+      - name: Verify staging health
+        run: |
+          kubectl wait --for=condition=ready pod \
+            -l app.kubernetes.io/part-of=gridmind \
+            --namespace ${{ env.KUBE_NAMESPACE_STAGING }} \
+            --timeout=120s
+
+  # ---------------------------------------------------------------------------
+  # Integration Tests on Staging
+  # ---------------------------------------------------------------------------
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    environment: staging
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install pytest httpx
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Run integration tests
+        env:
+          GRIDMIND_STAGING_URL: ${{ secrets.STAGING_URL }}
+        run: |
+          pytest tests/integration/ -v --tb=short
+
+  # ---------------------------------------------------------------------------
+  # Canary Deployment: 5% -> 25% -> 50% -> 100%
+  # ---------------------------------------------------------------------------
+  canary-5:
+    name: "Canary: 5%"
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name gridmind-production --region ${{ env.AWS_REGION }}
+
+      - name: Deploy canary at 5%
+        run: |
+          IMAGE_TAG="sha-$(git rev-parse --short HEAD)"
+          for SERVICE in ${{ env.SERVICES }}; do
+            helm upgrade --install \
+              "gridmind-${SERVICE}-canary" \
+              "infrastructure/helm/${SERVICE}" \
+              --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              --set image.repository="${{ env.ECR_REGISTRY }}/gridmind-${SERVICE}" \
+              --set image.tag="${IMAGE_TAG}" \
+              --set canary.enabled=true \
+              --set canary.weight=5 \
+              --values "infrastructure/helm/${SERVICE}/values-production.yaml" \
+              --atomic \
+              --timeout 5m \
+              --wait
+          done
+
+      - name: Monitor error rate (5 minutes)
+        run: |
+          echo "Monitoring canary error rate for 5 minutes..."
+          for i in $(seq 1 30); do
+            ERROR_RATE=$(kubectl exec -n ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              deploy/prometheus-server -- \
+              curl -s 'http://localhost:9090/api/v1/query?query=gridmind_error_rate_5m' \
+              | jq -r '.data.result[0].value[1] // "0"' 2>/dev/null || echo "0")
+            echo "Check $i/30: error_rate=${ERROR_RATE}"
+            if (( $(echo "$ERROR_RATE > 0.001" | bc -l 2>/dev/null || echo 0) )); then
+              echo "::error::Error rate ${ERROR_RATE} exceeds 0.1% threshold. Rolling back."
+              for SERVICE in ${{ env.SERVICES }}; do
+                helm uninstall "gridmind-${SERVICE}-canary" \
+                  --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} || true
+              done
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "Canary at 5% is healthy."
+
+  canary-25:
+    name: "Canary: 25%"
+    runs-on: ubuntu-latest
+    needs: canary-5
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name gridmind-production --region ${{ env.AWS_REGION }}
+
+      - name: Scale canary to 25%
+        run: |
+          IMAGE_TAG="sha-$(git rev-parse --short HEAD)"
+          for SERVICE in ${{ env.SERVICES }}; do
+            helm upgrade \
+              "gridmind-${SERVICE}-canary" \
+              "infrastructure/helm/${SERVICE}" \
+              --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              --set image.repository="${{ env.ECR_REGISTRY }}/gridmind-${SERVICE}" \
+              --set image.tag="${IMAGE_TAG}" \
+              --set canary.enabled=true \
+              --set canary.weight=25 \
+              --values "infrastructure/helm/${SERVICE}/values-production.yaml" \
+              --atomic \
+              --timeout 5m \
+              --wait
+          done
+
+      - name: Monitor error rate (5 minutes)
+        run: |
+          echo "Monitoring canary error rate for 5 minutes..."
+          for i in $(seq 1 30); do
+            ERROR_RATE=$(kubectl exec -n ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              deploy/prometheus-server -- \
+              curl -s 'http://localhost:9090/api/v1/query?query=gridmind_error_rate_5m' \
+              | jq -r '.data.result[0].value[1] // "0"' 2>/dev/null || echo "0")
+            echo "Check $i/30: error_rate=${ERROR_RATE}"
+            if (( $(echo "$ERROR_RATE > 0.001" | bc -l 2>/dev/null || echo 0) )); then
+              echo "::error::Error rate ${ERROR_RATE} exceeds 0.1% threshold. Rolling back."
+              for SERVICE in ${{ env.SERVICES }}; do
+                helm uninstall "gridmind-${SERVICE}-canary" \
+                  --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} || true
+              done
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "Canary at 25% is healthy."
+
+  canary-50:
+    name: "Canary: 50%"
+    runs-on: ubuntu-latest
+    needs: canary-25
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name gridmind-production --region ${{ env.AWS_REGION }}
+
+      - name: Scale canary to 50%
+        run: |
+          IMAGE_TAG="sha-$(git rev-parse --short HEAD)"
+          for SERVICE in ${{ env.SERVICES }}; do
+            helm upgrade \
+              "gridmind-${SERVICE}-canary" \
+              "infrastructure/helm/${SERVICE}" \
+              --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              --set image.repository="${{ env.ECR_REGISTRY }}/gridmind-${SERVICE}" \
+              --set image.tag="${IMAGE_TAG}" \
+              --set canary.enabled=true \
+              --set canary.weight=50 \
+              --values "infrastructure/helm/${SERVICE}/values-production.yaml" \
+              --atomic \
+              --timeout 5m \
+              --wait
+          done
+
+      - name: Monitor error rate (5 minutes)
+        run: |
+          echo "Monitoring canary error rate for 5 minutes..."
+          for i in $(seq 1 30); do
+            ERROR_RATE=$(kubectl exec -n ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              deploy/prometheus-server -- \
+              curl -s 'http://localhost:9090/api/v1/query?query=gridmind_error_rate_5m' \
+              | jq -r '.data.result[0].value[1] // "0"' 2>/dev/null || echo "0")
+            echo "Check $i/30: error_rate=${ERROR_RATE}"
+            if (( $(echo "$ERROR_RATE > 0.001" | bc -l 2>/dev/null || echo 0) )); then
+              echo "::error::Error rate ${ERROR_RATE} exceeds 0.1% threshold. Rolling back."
+              for SERVICE in ${{ env.SERVICES }}; do
+                helm uninstall "gridmind-${SERVICE}-canary" \
+                  --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} || true
+              done
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "Canary at 50% is healthy."
+
+  # ---------------------------------------------------------------------------
+  # Full Rollout: promote canary to 100% (replace stable)
+  # ---------------------------------------------------------------------------
+  rollout-100:
+    name: "Rollout: 100%"
+    runs-on: ubuntu-latest
+    needs: canary-50
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name gridmind-production --region ${{ env.AWS_REGION }}
+
+      - name: Promote to stable (100%)
+        run: |
+          IMAGE_TAG="sha-$(git rev-parse --short HEAD)"
+          for SERVICE in ${{ env.SERVICES }}; do
+            # Update stable release to new image
+            helm upgrade --install \
+              "gridmind-${SERVICE}" \
+              "infrastructure/helm/${SERVICE}" \
+              --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+              --set image.repository="${{ env.ECR_REGISTRY }}/gridmind-${SERVICE}" \
+              --set image.tag="${IMAGE_TAG}" \
+              --set canary.enabled=false \
+              --values "infrastructure/helm/${SERVICE}/values-production.yaml" \
+              --atomic \
+              --timeout 5m \
+              --wait
+
+            # Remove canary release
+            helm uninstall "gridmind-${SERVICE}-canary" \
+              --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} || true
+          done
+
+      - name: Verify production health
+        run: |
+          kubectl wait --for=condition=ready pod \
+            -l app.kubernetes.io/part-of=gridmind \
+            --namespace ${{ env.KUBE_NAMESPACE_PRODUCTION }} \
+            --timeout=120s
+
+      - name: Notify Slack — deploy success
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"text\": \":white_check_mark: GridMind deployed to production\",
+              \"blocks\": [{
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Deploy Success*\nCommit: \`$(git rev-parse --short HEAD)\`\nActor: ${{ github.actor }}\nWorkflow: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>\"
+                }
+              }]
+            }" 2>/dev/null || true
+
+      - name: Notify Slack — deploy failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"text\": \":x: GridMind production deploy FAILED\",
+              \"blocks\": [{
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Deploy Failed — Auto-rollback triggered*\nCommit: \`$(git rev-parse --short HEAD)\`\nActor: ${{ github.actor }}\nWorkflow: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>\"
+                }
+              }]
+            }" 2>/dev/null || true

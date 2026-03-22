@@ -1,0 +1,255 @@
+# GridMind Local Development Stack
+# Usage: docker compose up -d
+# Docs: docs/prd/incoming/DEVELOPMENT-GUIDE.md
+
+services:
+  # ---------------------------------------------------------------------------
+  # Infrastructure Services
+  # ---------------------------------------------------------------------------
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: gridmind-postgres
+    environment:
+      POSTGRES_DB: gridmind
+      POSTGRES_USER: gridmind
+      POSTGRES_PASSWORD: gridmind_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gridmind"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: gridmind-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: gridmind-nats
+    command: ["--jetstream", "--store_dir", "/data"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - natsdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:8222/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: gridmind-vault
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: dev-root-token
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      test: ["CMD-SHELL", "vault status -address=http://127.0.0.1:8200 || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Application Services — Backend
+  # ---------------------------------------------------------------------------
+
+  gateway:
+    build:
+      context: ./services/gateway
+      dockerfile: Dockerfile
+    container_name: gridmind-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      GRIDMIND_ENV: development
+      GRIDMIND_SERVICE_NAME: gateway
+      GRIDMIND_LOG_LEVEL: debug
+      GRIDMIND_DB_HOST: postgres
+      GRIDMIND_DB_PORT: "5432"
+      GRIDMIND_DB_NAME: gridmind
+      GRIDMIND_DB_USER: gridmind
+      GRIDMIND_DB_PASSWORD: gridmind_dev
+      GRIDMIND_REDIS_URL: redis://redis:6379/0
+      GRIDMIND_NATS_URL: nats://nats:4222
+      GRIDMIND_VAULT_ADDR: http://vault:8200
+      GRIDMIND_VAULT_TOKEN: dev-root-token
+      GRIDMIND_JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-production}
+      GRIDMIND_CORS_ORIGINS: "http://localhost:3000,http://localhost:3001,http://localhost:3002"
+      GRIDMIND_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-mock-anthropic-key-local-dev}
+      GRIDMIND_STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_placeholder}
+      GRIDMIND_STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_test_placeholder}
+      GRIDMIND_RESEND_API_KEY: ${RESEND_API_KEY:-re_test_placeholder}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    volumes:
+      - ./services/gateway:/app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  cortex:
+    build:
+      context: ./services/cortex
+      dockerfile: Dockerfile
+    container_name: gridmind-cortex
+    ports:
+      - "9090:9090"
+    environment:
+      GRIDMIND_ENV: development
+      GRIDMIND_SERVICE_NAME: cortex
+      GRIDMIND_LOG_LEVEL: debug
+      GRIDMIND_DB_HOST: postgres
+      GRIDMIND_DB_PORT: "5432"
+      GRIDMIND_DB_NAME: gridmind
+      GRIDMIND_DB_USER: gridmind
+      GRIDMIND_DB_PASSWORD: gridmind_dev
+      GRIDMIND_REDIS_URL: redis://redis:6379/0
+      GRIDMIND_NATS_URL: nats://nats:4222
+      GRIDMIND_VAULT_ADDR: http://vault:8200
+      GRIDMIND_VAULT_TOKEN: dev-root-token
+      GRIDMIND_ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-mock-anthropic-key-local-dev}
+      GRIDMIND_CORTEX_PORT: "9090"
+      GRIDMIND_AGENT_HEARTBEAT_INTERVAL: "30"
+      GRIDMIND_AGENT_MAX_RETRIES: "3"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    volumes:
+      - ./services/cortex:/app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9090/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Application Services — Frontend
+  # ---------------------------------------------------------------------------
+
+  admin:
+    build:
+      context: ./services/admin
+      dockerfile: Dockerfile
+    container_name: gridmind-admin
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      gateway:
+        condition: service_healthy
+    volumes:
+      - ./services/admin/src:/app/src
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  portal:
+    build:
+      context: ./services/portal
+      dockerfile: Dockerfile
+    container_name: gridmind-portal
+    ports:
+      - "3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      gateway:
+        condition: service_healthy
+    volumes:
+      - ./services/portal/src:/app/src
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  superadmin:
+    build:
+      context: ./services/superadmin
+      dockerfile: Dockerfile
+    container_name: gridmind-superadmin
+    ports:
+      - "3002:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      gateway:
+        condition: service_healthy
+    volumes:
+      - ./services/superadmin/src:/app/src
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+# ---------------------------------------------------------------------------
+# Volumes
+# ---------------------------------------------------------------------------
+
+volumes:
+  pgdata:
+    driver: local
+  natsdata:
+    driver: local

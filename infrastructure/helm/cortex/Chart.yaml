@@ -1,0 +1,17 @@
+apiVersion: v2
+name: cortex
+description: GridMind Cortex — 24-agent AI runtime service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - gridmind
+  - cortex
+  - ai-agents
+  - python
+home: https://gridmind.io
+sources:
+  - https://github.com/assertive-mind/gridmind
+maintainers:
+  - name: PIPELINE
+    email: platform@gridmind.io

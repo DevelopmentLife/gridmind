@@ -1,0 +1,277 @@
+# =============================================================================
+# GridMind — Pull Request Checks
+# =============================================================================
+# Triggers on pull request events.
+# Runs same checks as CI plus auto-labeling.
+# =============================================================================
+
+name: PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "20"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Auto-label based on changed files
+  # ---------------------------------------------------------------------------
+  auto-label:
+    name: Auto Label
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed files and apply labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+
+            const labels = new Set();
+            for (const file of files) {
+              if (file.filename.startsWith('services/gateway/'))   labels.add('service:gateway');
+              if (file.filename.startsWith('services/cortex/'))    labels.add('service:cortex');
+              if (file.filename.startsWith('services/admin/'))     labels.add('service:admin');
+              if (file.filename.startsWith('services/portal/'))    labels.add('service:portal');
+              if (file.filename.startsWith('services/superadmin/'))labels.add('service:superadmin');
+              if (file.filename.startsWith('shared/'))             labels.add('shared');
+              if (file.filename.startsWith('migrations/'))         labels.add('database');
+              if (file.filename.startsWith('infrastructure/'))     labels.add('infrastructure');
+              if (file.filename.startsWith('.github/'))            labels.add('ci/cd');
+              if (file.filename.endsWith('.md'))                   labels.add('docs');
+            }
+
+            if (labels.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: [...labels],
+              });
+            }
+
+  # ---------------------------------------------------------------------------
+  # Python Linting
+  # ---------------------------------------------------------------------------
+  lint-python:
+    name: Lint Python
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [cortex, gateway]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install linting tools
+        run: pip install ruff mypy
+
+      - name: Install service dependencies
+        run: |
+          cd services/${{ matrix.service }}
+          pip install -e ".[dev]" 2>/dev/null || pip install -e . 2>/dev/null || true
+
+      - name: Install shared package
+        run: pip install -e ./shared 2>/dev/null || true
+
+      - name: Ruff check
+        run: ruff check services/${{ matrix.service }} shared/
+
+      - name: Mypy strict
+        run: mypy --strict services/${{ matrix.service }} shared/
+
+  # ---------------------------------------------------------------------------
+  # TypeScript Linting
+  # ---------------------------------------------------------------------------
+  lint-typescript:
+    name: Lint TypeScript
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [admin, portal, superadmin]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: services/${{ matrix.service }}/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd services/${{ matrix.service }}
+          npm ci
+
+      - name: ESLint
+        run: |
+          cd services/${{ matrix.service }}
+          npx eslint . --max-warnings 0
+
+  # ---------------------------------------------------------------------------
+  # Python Tests with service containers
+  # ---------------------------------------------------------------------------
+  test-python:
+    name: Test Python
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [cortex, gateway]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: gridmind_test
+          POSTGRES_USER: gridmind
+          POSTGRES_PASSWORD: gridmind_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U gridmind"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      GRIDMIND_ENV: test
+      GRIDMIND_DB_HOST: localhost
+      GRIDMIND_DB_PORT: "5432"
+      GRIDMIND_DB_NAME: gridmind_test
+      GRIDMIND_DB_USER: gridmind
+      GRIDMIND_DB_PASSWORD: gridmind_test
+      GRIDMIND_REDIS_URL: redis://localhost:6379/0
+      GRIDMIND_NATS_URL: nats://localhost:4222
+      GRIDMIND_ANTHROPIC_API_KEY: sk-ant-mock-key-for-ci
+      GRIDMIND_JWT_SECRET: ci-test-jwt-secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          cd services/${{ matrix.service }}
+          pip install -e ".[dev]" 2>/dev/null || pip install -e ".[test]" 2>/dev/null || pip install -e . 2>/dev/null || true
+          pip install pytest pytest-cov pytest-asyncio
+
+      - name: Install shared package
+        run: pip install -e ./shared 2>/dev/null || true
+
+      - name: Run tests with coverage
+        run: |
+          cd services/${{ matrix.service }}
+          pytest \
+            --cov=. \
+            --cov-report=xml \
+            --cov-report=term-missing \
+            --cov-fail-under=85 \
+            -v
+
+  # ---------------------------------------------------------------------------
+  # TypeScript Tests
+  # ---------------------------------------------------------------------------
+  test-typescript:
+    name: Test TypeScript
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [admin, portal, superadmin]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: services/${{ matrix.service }}/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd services/${{ matrix.service }}
+          npm ci
+
+      - name: Run tests with coverage
+        run: |
+          cd services/${{ matrix.service }}
+          npx vitest run --coverage --coverage.thresholds.lines=85
+
+  # ---------------------------------------------------------------------------
+  # Build Docker Images
+  # ---------------------------------------------------------------------------
+  build-images:
+    name: Build Images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [gateway, cortex, admin, portal, superadmin]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/${{ matrix.service }}
+          file: ./services/${{ matrix.service }}/Dockerfile
+          push: false
+          tags: gridmind-${{ matrix.service }}:pr-${{ github.event.pull_request.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ---------------------------------------------------------------------------
+  # PR Gate — all jobs must pass
+  # ---------------------------------------------------------------------------
+  pr-gate:
+    name: PR Gate
+    runs-on: ubuntu-latest
+    needs:
+      - lint-python
+      - lint-typescript
+      - test-python
+      - test-typescript
+      - build-images
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.lint-python.result }}" != "success" ]] || \
+             [[ "${{ needs.lint-typescript.result }}" != "success" ]] || \
+             [[ "${{ needs.test-python.result }}" != "success" ]] || \
+             [[ "${{ needs.test-typescript.result }}" != "success" ]] || \
+             [[ "${{ needs.build-images.result }}" != "success" ]]; then
+            echo "::error::One or more PR checks failed."
+            exit 1
+          fi
+          echo "All PR checks passed."

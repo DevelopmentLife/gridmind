@@ -1,0 +1,124 @@
+###############################################################################
+# superadmin — Default values (dev-suitable)
+# INTERNAL ONLY — platform.gridmind.io — restrict access by IP in ingress
+###############################################################################
+
+replicaCount: 1
+
+image:
+  repository: ""
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "superadmin"
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 3002
+  targetPort: 3002
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    # IP allowlist — dev allows all; restrict in production
+    nginx.ingress.kubernetes.io/whitelist-source-range: "0.0.0.0/0"
+  hosts:
+    - host: "platform-dev.gridmind.io"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: gridmind-tls-wildcard
+      hosts:
+        - "platform-dev.gridmind.io"
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: 3002
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: 3002
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+env:
+  NODE_ENV: "production"
+  PORT: "3002"
+  ENVIRONMENT: "dev"
+  NEXT_TELEMETRY_DISABLED: "1"
+
+envFromSecrets:
+  - name: superadmin-secrets
+    optional: false
+
+vault:
+  enabled: false
+  role: "superadmin"
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
+  - name: nextjs-cache
+    mountPath: /app/.next/cache
+
+volumes:
+  - name: tmp
+    emptyDir: {}
+  - name: nextjs-cache
+    emptyDir: {}

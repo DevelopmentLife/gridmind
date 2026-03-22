@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "admin.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "admin.labels" . | nindent 4 }}
+data:
+  {{- range $key, $val := .Values.env }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}

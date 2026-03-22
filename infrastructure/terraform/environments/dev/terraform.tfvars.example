@@ -1,0 +1,24 @@
+# GridMind Dev Environment — Example tfvars
+# Copy to terraform.tfvars and fill in real values. Never commit terraform.tfvars.
+
+aws_region = "us-east-1"
+
+vpc_cidr           = "10.10.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b"]
+private_subnets    = ["10.10.1.0/24", "10.10.2.0/24"]
+public_subnets     = ["10.10.101.0/24", "10.10.102.0/24"]
+
+# Restrict to your office/VPN CIDR in production-like envs
+developer_cidrs = ["0.0.0.0/0"]
+
+route53_zone_id   = "Z0123456789EXAMPLE"
+root_domain       = "gridmind.io"
+access_log_bucket = "gridmind-alb-logs-dev"
+
+alert_emails = ["oncall@gridmind.io"]
+
+# Set via env var: TF_VAR_grafana_admin_password
+grafana_admin_password = ""
+
+github_org  = "assertive-mind"
+github_repo = "gridmind"

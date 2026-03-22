@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    @apply bg-brand-midnight text-brand-text-primary;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-sans bg-brand-midnight text-brand-text-primary min-h-screen;
+  }
+
+  * {
+    @apply border-brand-border-subtle;
+  }
+
+  /* Focus ring reset — handled per-component with focus:ring */
+  *:focus {
+    outline: none;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-brand-midnight;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-slate rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-slate-light;
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-brand-electric hover:bg-brand-electric/90 text-white font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-electric/50 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-brand-slate hover:bg-brand-slate-light text-brand-text-secondary hover:text-brand-text-primary font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-electric/50 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-brand-red/50 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .input {
+    @apply w-full bg-brand-midnight border border-brand-border-default rounded-md px-3 py-2 text-sm text-brand-text-primary placeholder-brand-text-muted focus:outline-none focus:ring-2 focus:ring-brand-electric/50 focus:border-brand-electric/50 transition-colors;
+  }
+
+  .card {
+    @apply bg-brand-navy border border-brand-border-default rounded-lg p-5 shadow-card;
+  }
+
+  .label {
+    @apply block text-xs font-medium text-brand-text-secondary mb-1;
+  }
+
+  .error-text {
+    @apply text-xs text-brand-red mt-1;
+  }
+}

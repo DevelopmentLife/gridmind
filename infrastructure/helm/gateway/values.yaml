@@ -1,0 +1,131 @@
+###############################################################################
+# gateway — Default values (dev-suitable)
+###############################################################################
+
+replicaCount: 1
+
+image:
+  repository: ""  # Set to ECR URL at deploy time: <account>.dkr.ecr.<region>.amazonaws.com/gridmind/gateway
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "gateway"
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9090"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+  metricsPort: 9090
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+  hosts:
+    - host: "api-dev.gridmind.io"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: gridmind-tls-wildcard
+      hosts:
+        - "api-dev.gridmind.io"
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+env:
+  ENVIRONMENT: "dev"
+  LOG_LEVEL: "INFO"
+  PORT: "8000"
+  METRICS_PORT: "9090"
+  WORKERS: "2"
+
+envFromSecrets:
+  - name: gateway-secrets
+    optional: false
+
+# Vault agent sidecar injection
+vault:
+  enabled: false
+  role: "gateway"
+  serviceAccountName: "gateway"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+topologySpreadConstraints: []
+
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
+
+volumes:
+  - name: tmp
+    emptyDir: {}
+
+# Namespace override (defaults to Release.Namespace)
+namespaceOverride: ""

@@ -1,0 +1,42 @@
+replicaCount: 2
+
+image:
+  pullPolicy: Always
+
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12"
+  hosts:
+    - host: "platform-staging.gridmind.io"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: gridmind-tls-wildcard
+      hosts:
+        - "platform-staging.gridmind.io"
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+autoscaling:
+  enabled: false
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+env:
+  NODE_ENV: "production"
+  PORT: "3002"
+  ENVIRONMENT: "staging"
+  NEXT_TELEMETRY_DISABLED: "1"
+
+vault:
+  enabled: true
