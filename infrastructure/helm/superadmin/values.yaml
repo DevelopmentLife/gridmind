@@ -1,6 +1,6 @@
 ###############################################################################
 # superadmin — Default values (dev-suitable)
-# INTERNAL ONLY — platform.gridmind.io — restrict access by IP in ingress
+# INTERNAL ONLY — platform.gridmindai.dev — restrict access by IP in ingress
 ###############################################################################
 
 replicaCount: 1
@@ -46,14 +46,14 @@ ingress:
     # IP allowlist — dev allows all; restrict in production
     nginx.ingress.kubernetes.io/whitelist-source-range: "0.0.0.0/0"
   hosts:
-    - host: "platform-dev.gridmind.io"
+    - host: "platform-dev.gridmindai.dev"
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: gridmind-tls-wildcard
       hosts:
-        - "platform-dev.gridmind.io"
+        - "platform-dev.gridmindai.dev"
 
 resources:
   requests:

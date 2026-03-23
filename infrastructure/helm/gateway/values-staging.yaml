@@ -9,14 +9,14 @@ image:
 
 ingress:
   hosts:
-    - host: "api-staging.gridmind.io"
+    - host: "api-staging.gridmindai.dev"
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: gridmind-tls-wildcard
       hosts:
-        - "api-staging.gridmind.io"
+        - "api-staging.gridmindai.dev"
 
 resources:
   requests:

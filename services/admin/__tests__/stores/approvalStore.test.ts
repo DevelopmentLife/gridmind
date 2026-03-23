@@ -57,7 +57,7 @@ describe("approvalStore", () => {
       useApprovalStore.getState().setApprovals([makeApproval()]);
       useApprovalStore
         .getState()
-        .updateApprovalStatus("appr-001", "approved", "operator@gridmind.io", "LGTM");
+        .updateApprovalStatus("appr-001", "approved", "operator@gridmindai.dev", "LGTM");
       expect(useApprovalStore.getState().approvals[0]?.status).toBe("approved");
     });
 
@@ -65,7 +65,7 @@ describe("approvalStore", () => {
       useApprovalStore.getState().setApprovals([makeApproval()]);
       useApprovalStore
         .getState()
-        .updateApprovalStatus("appr-001", "rejected", "operator@gridmind.io", "Too risky");
+        .updateApprovalStatus("appr-001", "rejected", "operator@gridmindai.dev", "Too risky");
       expect(useApprovalStore.getState().approvals[0]?.status).toBe("rejected");
     });
 

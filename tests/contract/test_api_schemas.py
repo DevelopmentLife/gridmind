@@ -28,14 +28,14 @@ class TestLoginRequest:
 
     def test_login_request_instantiation(self) -> None:
         from gateway.schemas.auth import LoginRequest
-        req = LoginRequest(email="user@gridmind.io", password="hunter2")
-        assert req.email == "user@gridmind.io"
+        req = LoginRequest(email="user@gridmindai.dev", password="hunter2")
+        assert req.email == "user@gridmindai.dev"
 
     def test_login_request_rejects_empty_password(self) -> None:
         from pydantic import ValidationError
         from gateway.schemas.auth import LoginRequest
         with pytest.raises(ValidationError):
-            LoginRequest(email="user@gridmind.io", password="")
+            LoginRequest(email="user@gridmindai.dev", password="")
 
 
 class TestTokenResponse:

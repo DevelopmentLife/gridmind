@@ -234,7 +234,7 @@ Specialized tier (6):
 
 ### Admin Dashboard (`services/admin/`)
 
-- Next.js 15 App Router application for `admin.gridmind.io`
+- Next.js 15 App Router application for `admin.gridmindai.dev`
 - Fleet overview with real-time agent status cards (WebSocket-hydrated)
 - Tenant management interface (list, detail, lifecycle transitions, usage)
 - HITL approval queue with real-time push via WebSocket approval channel
@@ -248,7 +248,7 @@ Specialized tier (6):
 
 ### Customer Portal (`services/portal/`)
 
-- Next.js 15 App Router application for `app.gridmind.io`
+- Next.js 15 App Router application for `app.gridmindai.dev`
 - Dashboard with live metrics charts (WebSocket metrics channel)
 - Deployment cards with health, metrics, and action buttons
 - Agent fleet view (customer-visible agents only: ARGUS, ORACLE, TITAN, PRISM, SHERLOCK, AEGIS, FORGE, CONVOY, VAULT, TUNER, HARBOR)
@@ -263,7 +263,7 @@ Specialized tier (6):
 
 ### SuperAdmin Platform (`services/superadmin/`)
 
-- Next.js 15 App Router application for `platform.gridmind.io`
+- Next.js 15 App Router application for `platform.gridmindai.dev`
 - Cross-tenant management (all tenants visible)
 - Platform FinOps dashboard (internal cost data from THRIFT)
 - Agent mesh global health view

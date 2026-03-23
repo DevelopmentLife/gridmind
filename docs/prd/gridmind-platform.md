@@ -167,7 +167,7 @@ Wave 4 (all services done):
 
 1. Monorepo structure: `gridmind-io/gridmind` (single repo for all services except gridmind-site)
 2. Terraform state: S3 bucket `gridmind-terraform-state`, DynamoDB lock `gridmind-terraform-locks`
-3. Primary domain: `gridmind.io`
+3. Primary domain: `gridmindai.dev`
 4. Initial superadmin: configured via `SUPERADMIN_EMAIL` + `SUPERADMIN_PASSWORD` env vars
 5. Local dev ports: gateway:8000, admin:3000, portal:3001, superadmin:3002, cortex metrics:9090
 6. Coverage gate: 85% minimum (per DEVELOPMENT-GUIDE.md, overrides STANDARDS.md 90%)

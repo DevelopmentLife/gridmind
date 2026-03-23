@@ -13,14 +13,14 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   hosts:
-    - host: "admin.gridmind.io"
+    - host: "admin.gridmindai.dev"
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: gridmind-tls-wildcard
       hosts:
-        - "admin.gridmind.io"
+        - "admin.gridmindai.dev"
 
 resources:
   requests:

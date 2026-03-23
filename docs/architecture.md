@@ -15,7 +15,7 @@ GridMind is an AI-native agentic database operations platform. Twenty-four auton
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                          Customer Browsers                                   │
-│         admin.gridmind.io    app.gridmind.io    platform.gridmind.io        │
+│         admin.gridmindai.dev    app.gridmindai.dev    platform.gridmindai.dev        │
 └───────┬──────────────────────────┬─────────────────────┬────────────────────┘
         │                          │                     │
         ▼                          ▼                     ▼
@@ -96,7 +96,7 @@ The external-facing REST API and WebSocket hub. All three frontend applications 
 
 ### 2.3 Admin (`services/admin/`) — Operator Dashboard
 
-Internal operator interface at `admin.gridmind.io`. Used by GridMind staff to monitor the fleet, manage tenants, review agent activity, handle HITL approvals, and observe billing.
+Internal operator interface at `admin.gridmindai.dev`. Used by GridMind staff to monitor the fleet, manage tenants, review agent activity, handle HITL approvals, and observe billing.
 
 - **Port:** 3000
 - **Framework:** Next.js 15, React 19, TypeScript 5.x strict
@@ -106,7 +106,7 @@ Internal operator interface at `admin.gridmind.io`. Used by GridMind staff to mo
 
 ### 2.4 Portal (`services/portal/`) — Customer Portal
 
-Customer-facing interface at `app.gridmind.io`. Customers connect databases, monitor agent activity, review optimization recommendations, manage incidents, configure approvals, and access billing.
+Customer-facing interface at `app.gridmindai.dev`. Customers connect databases, monitor agent activity, review optimization recommendations, manage incidents, configure approvals, and access billing.
 
 - **Port:** 3001
 - **Framework:** Next.js 15, React 19, TypeScript 5.x strict
@@ -114,7 +114,7 @@ Customer-facing interface at `app.gridmind.io`. Customers connect databases, mon
 
 ### 2.5 SuperAdmin (`services/superadmin/`) — Platform Admin
 
-God-mode platform administration at `platform.gridmind.io`. Used for cross-tenant management, platform FinOps, and global configuration.
+God-mode platform administration at `platform.gridmindai.dev`. Used for cross-tenant management, platform FinOps, and global configuration.
 
 - **Port:** 3002
 - **Framework:** Next.js 15, React 19, TypeScript 5.x strict
@@ -122,7 +122,7 @@ God-mode platform administration at `platform.gridmind.io`. Used for cross-tenan
 
 ### 2.6 GridMind Site (`gridmind-site/`) — Marketing Site
 
-Public marketing website (separate repository). Next.js 15, served at `gridmind.io`.
+Public marketing website (separate repository). Next.js 15, served at `gridmindai.dev`.
 
 ---
 

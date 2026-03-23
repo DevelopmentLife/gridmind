@@ -13,7 +13,7 @@ const MOCK_FLAG_ENABLED: FeatureFlag = {
   disabledTenants: [],
   createdAt: "2025-01-10T10:00:00Z",
   updatedAt: "2025-02-15T14:30:00Z",
-  updatedBy: "eng@gridmind.io",
+  updatedBy: "eng@gridmindai.dev",
   tags: ["ui", "dashboard"],
 };
 
@@ -149,7 +149,7 @@ describe("FeatureFlagRow", () => {
 
   it("shows updatedBy information", () => {
     render(<FeatureFlagRow flag={MOCK_FLAG_ENABLED} />);
-    expect(screen.getByText(/eng@gridmind.io/)).toBeInTheDocument();
+    expect(screen.getByText(/eng@gridmindai.dev/)).toBeInTheDocument();
   });
 
   it("applies data-testid attribute", () => {

@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 const MOCK_SNAPSHOT: SystemHealthSnapshot = {
   collectedAt: new Date(Date.now() - 30_000).toISOString(),
   services: [
-    { serviceId: "svc-gateway", name: "gateway", displayName: "API Gateway", status: "healthy", latencyMs: 24, uptimePercent: 99.98, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 3, healthyReplicas: 3, endpoint: "api.gridmind.io" },
+    { serviceId: "svc-gateway", name: "gateway", displayName: "API Gateway", status: "healthy", latencyMs: 24, uptimePercent: 99.98, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 3, healthyReplicas: 3, endpoint: "api.gridmindai.dev" },
     { serviceId: "svc-cortex", name: "cortex", displayName: "Cortex Runtime", status: "healthy", latencyMs: 12, uptimePercent: 99.97, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 6, healthyReplicas: 6, endpoint: "cortex.internal:9090" },
-    { serviceId: "svc-admin", name: "admin", displayName: "Admin Dashboard", status: "healthy", latencyMs: 45, uptimePercent: 99.95, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 2, healthyReplicas: 2, endpoint: "admin.gridmind.io" },
-    { serviceId: "svc-portal", name: "portal", displayName: "Customer Portal", status: "healthy", latencyMs: 38, uptimePercent: 99.97, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 4, healthyReplicas: 4, endpoint: "app.gridmind.io" },
+    { serviceId: "svc-admin", name: "admin", displayName: "Admin Dashboard", status: "healthy", latencyMs: 45, uptimePercent: 99.95, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 2, healthyReplicas: 2, endpoint: "admin.gridmindai.dev" },
+    { serviceId: "svc-portal", name: "portal", displayName: "Customer Portal", status: "healthy", latencyMs: 38, uptimePercent: 99.97, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.2.0", replicas: 4, healthyReplicas: 4, endpoint: "app.gridmindai.dev" },
     { serviceId: "svc-vault", name: "vault", displayName: "HashiCorp Vault", status: "healthy", latencyMs: 6, uptimePercent: 100, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "1.15.4", replicas: 3, healthyReplicas: 3, endpoint: "vault.internal:8200" },
     { serviceId: "svc-nats", name: "nats", displayName: "NATS JetStream", status: "healthy", latencyMs: 3, uptimePercent: 100, lastCheckedAt: new Date(Date.now() - 30_000).toISOString(), version: "2.10.4", replicas: 3, healthyReplicas: 3, endpoint: "nats.internal:4222" },
   ],

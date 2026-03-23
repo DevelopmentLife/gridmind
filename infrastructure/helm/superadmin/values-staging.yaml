@@ -8,14 +8,14 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-body-size: "1m"
     nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12"
   hosts:
-    - host: "platform-staging.gridmind.io"
+    - host: "platform-staging.gridmindai.dev"
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: gridmind-tls-wildcard
       hosts:
-        - "platform-staging.gridmind.io"
+        - "platform-staging.gridmindai.dev"
 
 resources:
   requests:

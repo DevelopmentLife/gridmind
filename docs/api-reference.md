@@ -1,7 +1,7 @@
 # GridMind API Reference
 
 **Version:** 0.1.0
-**Base URL:** `https://api.gridmind.io`
+**Base URL:** `https://api.gridmindai.dev`
 **Content-Type:** `application/json`
 **Auth:** `Authorization: Bearer {access_token}` (JWT RS256)
 

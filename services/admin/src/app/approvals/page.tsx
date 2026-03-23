@@ -48,7 +48,7 @@ export default function ApprovalsPage() {
       updateApprovalStatus(
         approvalId,
         "approved",
-        "operator@gridmind.io",
+        "operator@gridmindai.dev",
         justification ?? "Approved by operator"
       );
       addNotification({
@@ -69,7 +69,7 @@ export default function ApprovalsPage() {
       updateApprovalStatus(
         approvalId,
         "rejected",
-        "operator@gridmind.io",
+        "operator@gridmindai.dev",
         justification
       );
       addNotification({

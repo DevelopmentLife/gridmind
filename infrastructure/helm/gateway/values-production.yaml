@@ -13,16 +13,16 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://app.gridmind.io,https://admin.gridmind.io,https://platform.gridmind.io"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://app.gridmindai.dev,https://admin.gridmindai.dev,https://platform.gridmindai.dev"
   hosts:
-    - host: "api.gridmind.io"
+    - host: "api.gridmindai.dev"
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: gridmind-tls-wildcard
       hosts:
-        - "api.gridmind.io"
+        - "api.gridmindai.dev"
 
 resources:
   requests:

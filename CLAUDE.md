@@ -203,9 +203,9 @@ gridmind/
 │   ├── gateway/          # Python 3.12 FastAPI — 66 REST endpoints + WebSocket
 │   │   └── gateway/
 │   │       └── routes/   # auth, deployments, agents, tenants, billing, users, incidents, chat, onboarding
-│   ├── admin/            # Next.js 15 — Operator dashboard (admin.gridmind.io)
-│   ├── portal/           # Next.js 15 — Customer portal (app.gridmind.io)
-│   └── superadmin/       # Next.js 15 — Platform admin (platform.gridmind.io)
+│   ├── admin/            # Next.js 15 — Operator dashboard (admin.gridmindai.dev)
+│   ├── portal/           # Next.js 15 — Customer portal (app.gridmindai.dev)
+│   └── superadmin/       # Next.js 15 — Platform admin (platform.gridmindai.dev)
 ├── shared/
 │   ├── models/           # SQLAlchemy 2.0 ORM models + Pydantic v2
 │   ├── schemas/          # Pydantic v2 NATS event schemas

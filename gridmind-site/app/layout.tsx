@@ -12,7 +12,7 @@ export const metadata: Metadata = {
       "24 AI Agents. Zero DBAs. Your databases, fully autonomous.",
     siteName: "GridMind",
     type: "website",
-    url: "https://gridmind.io",
+    url: "https://gridmindai.dev",
     images: [
       {
         url: "/og-image.png",

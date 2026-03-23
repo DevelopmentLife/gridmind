@@ -13,7 +13,7 @@ const MOCK_FLAGS: FeatureFlag[] = [
     disabledTenants: [],
     createdAt: "2025-01-01T00:00:00Z",
     updatedAt: "2025-02-01T00:00:00Z",
-    updatedBy: "eng@gridmind.io",
+    updatedBy: "eng@gridmindai.dev",
     tags: ["ui", "dashboard"],
   },
   {
@@ -26,7 +26,7 @@ const MOCK_FLAGS: FeatureFlag[] = [
     disabledTenants: [],
     createdAt: "2025-01-10T00:00:00Z",
     updatedAt: "2025-01-15T00:00:00Z",
-    updatedBy: "cto@gridmind.io",
+    updatedBy: "cto@gridmindai.dev",
     tags: ["api", "beta"],
   },
   {
@@ -39,7 +39,7 @@ const MOCK_FLAGS: FeatureFlag[] = [
     disabledTenants: [],
     createdAt: "2025-02-01T00:00:00Z",
     updatedAt: "2025-03-01T00:00:00Z",
-    updatedBy: "product@gridmind.io",
+    updatedBy: "product@gridmindai.dev",
     tags: ["ai", "billing"],
   },
 ];
@@ -129,7 +129,7 @@ describe("featureFlagStore", () => {
         disabledTenants: [],
         createdAt: "2025-03-20T00:00:00Z",
         updatedAt: "2025-03-20T00:00:00Z",
-        updatedBy: "eng@gridmind.io",
+        updatedBy: "eng@gridmindai.dev",
         tags: [],
       };
       useFeatureFlagStore.getState().addFlag(newFlag);

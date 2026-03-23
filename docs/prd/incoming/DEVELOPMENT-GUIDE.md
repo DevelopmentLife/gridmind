@@ -529,7 +529,7 @@ from __future__ import annotations
 import httpx
 import pytest
 
-STAGING_URL = "https://staging-api.gridmind.io"
+STAGING_URL = "https://staging-api.gridmindai.dev"
 
 
 @pytest.fixture
@@ -543,7 +543,7 @@ class TestAuthFlow:
     async def test_register_login_refresh(self, client):
         # Register
         resp = await client.post("/api/v1/auth/register", json={
-            "email": f"test-{uuid4().hex[:8]}@gridmind.io",
+            "email": f"test-{uuid4().hex[:8]}@gridmindai.dev",
             "password": "TestPassword123!",
             "full_name": "Test User",
             "org_name": "Test Org",

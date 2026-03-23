@@ -193,7 +193,7 @@ export function Sidebar() {
       {/* Footer */}
       <div className="px-4 py-3 border-t border-brand-border-subtle">
         <p className="text-brand-text-muted text-2xs font-mono text-center">
-          platform.gridmind.io
+          platform.gridmindai.dev
         </p>
       </div>
     </aside>

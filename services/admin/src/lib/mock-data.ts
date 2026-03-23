@@ -840,7 +840,7 @@ export const MOCK_APPROVALS: Approval[] = [
     requestedAt: new Date(Date.now() - 7200_000).toISOString(),
     expiresAt: new Date(Date.now() + 3600_000).toISOString(),
     respondedAt: new Date(Date.now() - 6900_000).toISOString(),
-    respondedBy: "operator@gridmind.io",
+    respondedBy: "operator@gridmindai.dev",
     justification: "Low-risk concurrent index. Approved.",
     timeoutSeconds: 300,
   },

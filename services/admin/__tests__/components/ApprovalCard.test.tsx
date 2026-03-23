@@ -195,7 +195,7 @@ describe("ApprovalCard", () => {
     const approvedApproval: Approval = {
       ...mockApproval,
       status: "approved",
-      respondedBy: "operator@gridmind.io",
+      respondedBy: "operator@gridmindai.dev",
     };
     render(
       <ApprovalCard

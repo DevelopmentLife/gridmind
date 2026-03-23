@@ -8,9 +8,9 @@ const FOOTER_LINKS = {
     { label: "Agents", href: "#agents" },
     { label: "Pricing", href: "#pricing" },
     { label: "Engines", href: "#engines" },
-    { label: "Docs", href: "https://docs.gridmind.io" },
-    { label: "Blog", href: "https://blog.gridmind.io" },
-    { label: "Status", href: "https://status.gridmind.io" },
+    { label: "Docs", href: "https://docs.gridmindai.dev" },
+    { label: "Blog", href: "https://blog.gridmindai.dev" },
+    { label: "Status", href: "https://status.gridmindai.dev" },
   ],
   Legal: [
     { label: "Privacy Policy", href: "/privacy" },
@@ -20,7 +20,7 @@ const FOOTER_LINKS = {
   Company: [
     { label: "About", href: "/about" },
     { label: "Careers", href: "/careers" },
-    { label: "Contact", href: "mailto:hello@gridmind.io" },
+    { label: "Contact", href: "mailto:hello@gridmindai.dev" },
   ],
 } as const;
 

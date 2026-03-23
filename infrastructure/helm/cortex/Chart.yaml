@@ -9,9 +9,9 @@ keywords:
   - cortex
   - ai-agents
   - python
-home: https://gridmind.io
+home: https://gridmindai.dev
 sources:
   - https://github.com/assertive-mind/gridmind
 maintainers:
   - name: PIPELINE
-    email: platform@gridmind.io
+    email: platform@gridmindai.dev

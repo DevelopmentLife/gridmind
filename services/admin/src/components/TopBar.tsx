@@ -183,7 +183,7 @@ export function TopBar({ breadcrumbs, title }: TopBarProps) {
             OP
           </div>
           <span className="hidden md:block text-sm text-brand-text-secondary font-medium">
-            operator@gridmind.io
+            operator@gridmindai.dev
           </span>
         </button>
       </div>

@@ -55,9 +55,9 @@ GridMind is an AI-native agentic database operations platform. It deploys 24 aut
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                        External Traffic                                 │
-│   gridmind.io (marketing)  │  app.gridmind.io (portal)                 │
-│   admin.gridmind.io (ops)  │  platform.gridmind.io (superadmin)        │
-│   api.gridmind.io (gateway)                                            │
+│   gridmindai.dev (marketing)  │  app.gridmindai.dev (portal)                 │
+│   admin.gridmindai.dev (ops)  │  platform.gridmindai.dev (superadmin)        │
+│   api.gridmindai.dev (gateway)                                            │
 └──────────────────────────────┬──────────────────────────────────────────┘
                                │
                     ┌──────────▼──────────┐
@@ -916,8 +916,8 @@ customer_price = cost / (1 - margin_target)
 
 ### 17.2 Email Configuration
 
-- From: `notifications@gridmind.io`
-- Reply-to: `support@gridmind.io`
+- From: `notifications@gridmindai.dev`
+- Reply-to: `support@gridmindai.dev`
 - Unsubscribe links on non-critical emails
 - Track opens/clicks via SendGrid
 
@@ -1177,7 +1177,7 @@ Structured JSON logging via structlog. Bound context: request_id, agent_id, tena
 
 - [ ] AWS account + IAM Identity Center
 - [ ] S3/DynamoDB for Terraform state
-- [ ] Domain registration (gridmind.io) + ACM wildcard cert
+- [ ] Domain registration (gridmindai.dev) + ACM wildcard cert
 - [ ] GitHub OIDC provider + deploy IAM roles
 - [ ] Branch protection + repository secrets
 - [ ] Terraform apply: dev → staging → production
@@ -1272,8 +1272,8 @@ Structured JSON logging via structlog. Bound context: request_id, agent_id, tena
 
 | Domain | Target | Access |
 |--------|--------|--------|
-| `gridmind.io` | Marketing site (CloudFront/ECS) | Public |
-| `app.gridmind.io` | Portal (EKS/ALB) | Public |
-| `admin.gridmind.io` | Admin panel (EKS/ALB) | IP-restricted |
-| `platform.gridmind.io` | Super admin (EKS/ALB) | VPN-only |
-| `api.gridmind.io` | Gateway (EKS/ALB) | Public |
+| `gridmindai.dev` | Marketing site (CloudFront/ECS) | Public |
+| `app.gridmindai.dev` | Portal (EKS/ALB) | Public |
+| `admin.gridmindai.dev` | Admin panel (EKS/ALB) | IP-restricted |
+| `platform.gridmindai.dev` | Super admin (EKS/ALB) | VPN-only |
+| `api.gridmindai.dev` | Gateway (EKS/ALB) | Public |

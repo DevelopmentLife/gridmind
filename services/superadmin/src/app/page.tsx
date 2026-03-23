@@ -50,7 +50,7 @@ const MOCK_SERVICES: SystemService[] = [
     version: "1.2.0",
     replicas: 3,
     healthyReplicas: 3,
-    endpoint: "api.gridmind.io",
+    endpoint: "api.gridmindai.dev",
   },
   {
     serviceId: "svc-cortex",

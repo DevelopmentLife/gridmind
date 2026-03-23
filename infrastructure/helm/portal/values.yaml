@@ -43,14 +43,14 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-body-size: "1m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
   hosts:
-    - host: "app-dev.gridmind.io"
+    - host: "app-dev.gridmindai.dev"
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: gridmind-tls-wildcard
       hosts:
-        - "app-dev.gridmind.io"
+        - "app-dev.gridmindai.dev"
 
 resources:
   requests:
