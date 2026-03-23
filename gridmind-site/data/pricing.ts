@@ -4,14 +4,18 @@ export const pricingPlans: readonly PricingPlan[] = [
   {
     name: "Starter",
     tagline: "For teams running a handful of databases",
-    monthlyPrice: 299,
-    annualPrice: 2990,
     deployments: "3",
     agents: "12",
     teamMembers: "5",
     highlighted: false,
-    aiUsage: "50K decisions / mo",
     queryVolume: "10M queries / mo",
+    agentCosts: [
+      {
+        model: "Claude Haiku 4.5",
+        role: "Perception agents — monitoring, metrics, heartbeats",
+        includedDecisions: "Up to 50K decisions / mo",
+      },
+    ],
     vendorSupport: [
       {
         name: "AWS",
@@ -30,28 +34,37 @@ export const pricingPlans: readonly PricingPlan[] = [
       "3 database deployments",
       "AWS RDS or DigitalOcean Managed DB",
       "Up to 500 GB managed storage",
-      "50K agent AI decisions / mo (Claude Haiku)",
-      "10M queries analyzed / mo",
       "12 of 24 AI agents active",
+      "50K agent AI decisions / mo",
+      "10M queries analyzed / mo",
       "5 team members",
       "7-day event & log retention",
       "Email notifications",
       "Community support",
     ],
-    cta: "Start Trial",
+    cta: "Get a Quote",
     ctaHref: "/register",
   },
   {
     name: "Growth",
     tagline: "For growing teams across multiple cloud providers",
-    monthlyPrice: 799,
-    annualPrice: 7990,
     deployments: "10",
     agents: "24",
     teamMembers: "15",
     highlighted: true,
-    aiUsage: "500K decisions / mo",
     queryVolume: "100M queries / mo",
+    agentCosts: [
+      {
+        model: "Claude Haiku 4.5",
+        role: "Perception agents — monitoring, metrics, heartbeats",
+        includedDecisions: "Up to 400K decisions / mo",
+      },
+      {
+        model: "Claude Sonnet 4.6",
+        role: "Reasoning & execution agents — planning, scaling, healing",
+        includedDecisions: "Up to 100K decisions / mo",
+      },
+    ],
     vendorSupport: [
       {
         name: "AWS",
@@ -76,29 +89,43 @@ export const pricingPlans: readonly PricingPlan[] = [
       "10 database deployments",
       "AWS Aurora, GCP Cloud SQL, or DigitalOcean",
       "Up to 5 TB managed storage",
-      "500K agent AI decisions / mo (Haiku + Sonnet mix)",
-      "100M queries analyzed / mo",
       "All 24 AI agents active",
+      "500K agent AI decisions / mo",
+      "100M queries analyzed / mo",
       "15 team members",
       "30-day event & log retention",
       "Slack & email notifications",
       "Custom alert rules & thresholds",
       "Priority support (next business day)",
     ],
-    cta: "Start Trial",
+    cta: "Get a Quote",
     ctaHref: "/register",
   },
   {
     name: "Scale",
     tagline: "For large deployments with enterprise-grade SLAs",
-    monthlyPrice: 1999,
-    annualPrice: 19990,
     deployments: "50",
     agents: "24",
     teamMembers: "Unlimited",
     highlighted: false,
-    aiUsage: "2M decisions / mo",
     queryVolume: "Unlimited",
+    agentCosts: [
+      {
+        model: "Claude Haiku 4.5",
+        role: "Perception agents — monitoring, metrics, heartbeats",
+        includedDecisions: "Up to 1M decisions / mo",
+      },
+      {
+        model: "Claude Sonnet 4.6",
+        role: "Reasoning & execution agents — planning, scaling, healing",
+        includedDecisions: "Up to 800K decisions / mo",
+      },
+      {
+        model: "Claude Opus 4.6",
+        role: "Critical decision agents — root cause analysis, security",
+        includedDecisions: "Up to 200K decisions / mo",
+      },
+    ],
     vendorSupport: [
       {
         name: "AWS",
@@ -129,9 +156,9 @@ export const pricingPlans: readonly PricingPlan[] = [
       "50 database deployments",
       "AWS Aurora Global, GCP AlloyDB, Azure, or DigitalOcean",
       "Up to 50 TB managed storage",
-      "2M agent AI decisions / mo (Sonnet + Opus)",
-      "Unlimited query analysis",
       "All 24 AI agents active",
+      "2M agent AI decisions / mo",
+      "Unlimited query analysis",
       "Unlimited team members",
       "90-day event & log retention",
       "All notification channels (Slack, PagerDuty, Webhook)",
@@ -139,20 +166,24 @@ export const pricingPlans: readonly PricingPlan[] = [
       "SSO (OIDC / Google / Okta)",
       "Dedicated support engineer",
     ],
-    cta: "Start Trial",
+    cta: "Get a Quote",
     ctaHref: "/register",
   },
   {
     name: "Enterprise",
     tagline: "Custom contracts for regulated industries and multi-cloud fleets",
-    monthlyPrice: null,
-    annualPrice: null,
     deployments: "Unlimited",
     agents: "24",
     teamMembers: "Unlimited",
     highlighted: false,
-    aiUsage: "Custom allocation",
     queryVolume: "Unlimited",
+    agentCosts: [
+      {
+        model: "Claude Haiku / Sonnet / Opus 4.x",
+        role: "All 24 agents — custom model allocation per workload",
+        includedDecisions: "Custom volume commitment",
+      },
+    ],
     vendorSupport: [
       {
         name: "AWS",
@@ -170,7 +201,7 @@ export const pricingPlans: readonly PricingPlan[] = [
         name: "Azure",
         tier: "Any Azure Database service",
         storageRange: "Custom",
-        note: "Private endpoints · Microsoft Defender integration · CMK",
+        note: "Private endpoints · Microsoft Defender · CMK",
       },
       {
         name: "DigitalOcean",
@@ -183,7 +214,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "Unlimited deployments across any cloud",
       "AWS, Google Cloud, Azure, DigitalOcean — or on-prem",
       "Custom storage allocation per environment",
-      "Custom AI model allocation (Opus priority queue)",
+      "Custom AI model allocation per workload",
       "Unlimited query analysis with custom retention",
       "All 24 AI agents + custom agent development",
       "Unlimited team members + custom RBAC",
@@ -207,5 +238,5 @@ export const VENDOR_COLORS: Record<string, string> = {
   DigitalOcean: "text-[#0080FF] bg-[#0080FF]/10 border-[#0080FF]/20",
 };
 
-export const COST_FOOTNOTE =
-  "GridMind fees shown above are for the platform only. Cloud infrastructure costs (compute, storage, data transfer) are billed directly by your cloud provider and passed through at cost — we never mark up infrastructure.";
+export const PRICING_MODEL_NOTE =
+  "Pricing is based on the AI agent decisions your workload generates — factoring in model compute, platform hosting, and orchestration — with a margin built in to cover reliability, support, and continued development. Cloud storage and compute are billed directly by your provider and never marked up.";

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { pricingPlans, VENDOR_COLORS, COST_FOOTNOTE } from "@/data/pricing";
+import { pricingPlans, VENDOR_COLORS, PRICING_MODEL_NOTE } from "@/data/pricing";
 
 const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://app.gridmindai.dev";
 
@@ -26,8 +26,14 @@ function CheckIcon() {
   );
 }
 
+const MODEL_TIER_COLOR: Record<string, string> = {
+  "Claude Haiku 4.5": "text-cyan-400 bg-cyan-400/10 border-cyan-400/20",
+  "Claude Sonnet 4.6": "text-primary bg-primary/10 border-primary/20",
+  "Claude Opus 4.6": "text-violet-400 bg-violet-400/10 border-violet-400/20",
+  "Claude Haiku / Sonnet / Opus 4.x": "text-slate-300 bg-white/5 border-white/10",
+};
+
 export default function PricingSection() {
-  const [annual, setAnnual] = useState(false);
   const [expandedPlan, setExpandedPlan] = useState<string | null>("Growth");
 
   return (
@@ -45,49 +51,21 @@ export default function PricingSection() {
             id="pricing-heading"
             className="mt-2 font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl"
           >
-            One platform fee. Your cloud, your cost.
+            Pay for what your agents actually do
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            GridMind manages your databases on AWS, Google Cloud, Azure, or DigitalOcean.
-            You pay us for the platform. Your cloud bill stays between you and your provider — we never mark up infrastructure.
+            Pricing scales with your AI agent usage — the decisions they make, the models they run,
+            and the infrastructure they manage. No flat platform fee. No surprises.
           </p>
           <p className="mt-2 text-sm text-slate-500">
             14-day trial on every plan · Cancel anytime · Credit card required
           </p>
-
-          {/* Billing toggle */}
-          <div className="mt-8 flex items-center justify-center gap-3">
-            <span className={`text-sm ${!annual ? "text-white" : "text-slate-500"}`}>
-              Monthly
-            </span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={annual}
-              aria-label="Toggle annual billing"
-              onClick={() => setAnnual(!annual)}
-              className={`relative h-7 w-12 rounded-full transition-colors ${
-                annual ? "bg-primary" : "bg-slate-700"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white transition-transform ${
-                  annual ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </button>
-            <span className={`text-sm ${annual ? "text-white" : "text-slate-500"}`}>
-              Annual <span className="text-emerald">(Save ~17%)</span>
-            </span>
-          </div>
         </div>
 
         {/* Plan cards */}
         <div className="mx-auto mt-16 grid max-w-6xl gap-6 lg:grid-cols-4">
           {pricingPlans.map((plan, index) => {
-            const isEnterprise = plan.monthlyPrice === null;
-            const displayPrice = annual ? plan.annualPrice : plan.monthlyPrice;
-            const pricePeriod = annual ? "/yr" : "/mo";
+            const isEnterprise = plan.cta === "Contact Sales";
             const isExpanded = expandedPlan === plan.name;
 
             return (
@@ -120,19 +98,16 @@ export default function PricingSection() {
                     </p>
                   </div>
 
-                  {/* Price */}
+                  {/* Usage-based pricing label */}
                   <div className="mt-5">
                     {isEnterprise ? (
-                      <p className="font-heading text-4xl font-bold text-white">Custom</p>
+                      <p className="font-heading text-2xl font-bold text-white">Custom pricing</p>
                     ) : (
-                      <p className="flex items-baseline gap-1">
-                        <span className="font-heading text-4xl font-bold text-white">
-                          ${displayPrice?.toLocaleString()}
-                        </span>
-                        <span className="text-sm text-slate-500">{pricePeriod}</span>
-                      </p>
+                      <p className="font-heading text-2xl font-bold text-white">Usage-based</p>
                     )}
-                    <p className="mt-1 text-xs text-slate-600">Platform fee only</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      Priced on agent decisions + hosting
+                    </p>
                   </div>
 
                   {/* Usage stats */}
@@ -140,10 +115,6 @@ export default function PricingSection() {
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-slate-500">Deployments</span>
                       <span className="font-mono text-slate-300">{plan.deployments}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-500">AI decisions</span>
-                      <span className="font-mono text-slate-300">{plan.aiUsage}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-slate-500">Query volume</span>
@@ -174,7 +145,27 @@ export default function PricingSection() {
                     </div>
                   </div>
 
-                  {/* Expand / collapse vendor details */}
+                  {/* Agent models used */}
+                  <div className="mt-5">
+                    <p className="text-xs font-mono uppercase tracking-wider text-slate-600 mb-2">
+                      AI models
+                    </p>
+                    <div className="space-y-1.5">
+                      {plan.agentCosts.map((c) => (
+                        <div key={c.model} className="flex items-center gap-1.5">
+                          <span
+                            className={`inline-flex items-center rounded border px-1.5 py-0.5 text-xs font-mono font-semibold whitespace-nowrap ${
+                              MODEL_TIER_COLOR[c.model] ?? "text-slate-400 bg-slate-800 border-white/10"
+                            }`}
+                          >
+                            {c.model}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Expand / collapse details */}
                   <button
                     type="button"
                     onClick={() => setExpandedPlan(isExpanded ? null : plan.name)}
@@ -190,36 +181,68 @@ export default function PricingSection() {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    {isExpanded ? "Hide" : "Show"} provider details
+                    {isExpanded ? "Hide" : "Show"} provider & agent details
                   </button>
 
-                  {/* Vendor detail table */}
+                  {/* Expanded detail panels */}
                   {isExpanded && (
-                    <div className="mt-3 space-y-3">
-                      {plan.vendorSupport.map((v) => (
-                        <div
-                          key={v.name}
-                          className="rounded-lg border border-white/5 bg-slate-950/60 p-3"
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            <span
-                              className={`inline-flex items-center rounded border px-1.5 py-0.5 text-xs font-bold ${
-                                VENDOR_COLORS[v.name] ?? "text-slate-400 bg-slate-800 border-white/10"
-                              }`}
+                    <div className="mt-3 space-y-4">
+                      {/* Agent cost breakdown */}
+                      <div>
+                        <p className="text-xs font-mono uppercase tracking-wider text-slate-600 mb-2">
+                          Agent decisions included
+                        </p>
+                        <div className="space-y-2">
+                          {plan.agentCosts.map((c) => (
+                            <div
+                              key={c.model}
+                              className="rounded-lg border border-white/5 bg-slate-950/60 p-3"
                             >
-                              {v.name}
-                            </span>
-                            <span className="text-xs text-slate-300 font-medium">
-                              {v.tier}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-500 leading-relaxed">
-                            Storage: <span className="text-slate-400">{v.storageRange}</span>
-                            {" · "}
-                            {v.note}
-                          </p>
+                              <span
+                                className={`inline-flex items-center rounded border px-1.5 py-0.5 text-xs font-mono font-semibold ${
+                                  MODEL_TIER_COLOR[c.model] ?? "text-slate-400 bg-slate-800 border-white/10"
+                                }`}
+                              >
+                                {c.model}
+                              </span>
+                              <p className="mt-1.5 text-xs text-slate-400">{c.role}</p>
+                              <p className="mt-0.5 text-xs text-slate-500">{c.includedDecisions}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
+
+                      {/* Provider details */}
+                      <div>
+                        <p className="text-xs font-mono uppercase tracking-wider text-slate-600 mb-2">
+                          Infrastructure support
+                        </p>
+                        <div className="space-y-2">
+                          {plan.vendorSupport.map((v) => (
+                            <div
+                              key={v.name}
+                              className="rounded-lg border border-white/5 bg-slate-950/60 p-3"
+                            >
+                              <div className="flex items-center gap-2 mb-1">
+                                <span
+                                  className={`inline-flex items-center rounded border px-1.5 py-0.5 text-xs font-bold ${
+                                    VENDOR_COLORS[v.name] ?? "text-slate-400 bg-slate-800 border-white/10"
+                                  }`}
+                                >
+                                  {v.name}
+                                </span>
+                                <span className="text-xs text-slate-300 font-medium truncate">
+                                  {v.tier}
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-500 leading-relaxed">
+                                Storage: <span className="text-slate-400">{v.storageRange}</span>
+                                {" · "}{v.note}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -258,11 +281,11 @@ export default function PricingSection() {
           })}
         </div>
 
-        {/* Infrastructure cost callout */}
-        <div className="mx-auto mt-12 max-w-4xl rounded-xl border border-amber/20 bg-amber/5 p-6">
+        {/* Pricing model callout */}
+        <div className="mx-auto mt-12 max-w-4xl rounded-xl border border-white/10 bg-slate-900/50 p-6">
           <div className="flex gap-4">
             <svg
-              className="h-5 w-5 shrink-0 text-amber mt-0.5"
+              className="h-5 w-5 shrink-0 text-slate-400 mt-0.5"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
@@ -272,12 +295,8 @@ export default function PricingSection() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
             </svg>
             <div>
-              <p className="text-sm font-semibold text-amber mb-1">
-                About infrastructure costs
-              </p>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                {COST_FOOTNOTE}
-              </p>
+              <p className="text-sm font-semibold text-white mb-1">How pricing works</p>
+              <p className="text-sm text-slate-400 leading-relaxed">{PRICING_MODEL_NOTE}</p>
             </div>
           </div>
         </div>
@@ -306,19 +325,39 @@ export default function PricingSection() {
                 {[
                   {
                     name: "AWS",
-                    services: ["RDS (MySQL, Postgres)", "Aurora Serverless v2", "Aurora Global + Multi-Region", "Any RDS/Aurora/Redshift"],
+                    services: [
+                      "RDS (MySQL, Postgres, MariaDB)",
+                      "Aurora Serverless v2",
+                      "Aurora Global + Multi-Region",
+                      "Any RDS / Aurora / Redshift",
+                    ],
                   },
                   {
                     name: "Google Cloud",
-                    services: [null, "Cloud SQL (Enterprise)", "AlloyDB / Enterprise Plus", "Spanner / BigQuery / AlloyDB"],
+                    services: [
+                      null,
+                      "Cloud SQL Enterprise",
+                      "AlloyDB / Enterprise Plus",
+                      "Spanner / BigQuery / AlloyDB",
+                    ],
                   },
                   {
                     name: "Azure",
-                    services: [null, null, "Azure Database (Flexible)", "Any Azure Database service"],
+                    services: [
+                      null,
+                      null,
+                      "Azure Database (Flexible Server)",
+                      "Any Azure Database service",
+                    ],
                   },
                   {
                     name: "DigitalOcean",
-                    services: ["Managed Databases (Basic)", "Managed Databases (Standard)", "Managed Databases (Premium)", "Custom + Reserved capacity"],
+                    services: [
+                      "Managed Databases (Basic)",
+                      "Managed Databases (Standard)",
+                      "Managed Databases (Premium)",
+                      "Custom + Reserved capacity",
+                    ],
                   },
                 ].map((row) => (
                   <tr

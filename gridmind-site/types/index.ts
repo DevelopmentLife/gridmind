@@ -39,18 +39,22 @@ export interface PricingVendor {
   readonly note: string;
 }
 
+export interface AgentCostLine {
+  readonly model: string;            // e.g. "Claude Haiku 4.5"
+  readonly role: string;             // e.g. "Perception agents (12)"
+  readonly includedDecisions: string; // e.g. "Up to 50K decisions / mo"
+}
+
 export interface PricingPlan {
   readonly name: string;
   readonly tagline: string;
-  readonly monthlyPrice: number | null;
-  readonly annualPrice: number | null;
   readonly deployments: string;
   readonly agents: string;
   readonly teamMembers: string;
   readonly highlighted: boolean;
   readonly features: readonly string[];
   readonly vendorSupport: readonly PricingVendor[];
-  readonly aiUsage: string;
+  readonly agentCosts: readonly AgentCostLine[];
   readonly queryVolume: string;
   readonly cta: string;
   readonly ctaHref: string;
