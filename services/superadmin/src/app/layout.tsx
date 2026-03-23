@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { GodModeWarningBanner } from "@/components/GodModeWarningBanner";
 import { Sidebar } from "@/components/Sidebar";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
@@ -44,7 +45,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             className="flex-1 flex flex-col min-w-0 overflow-auto"
             id="main-content"
           >
-            {children}
+            <Providers>{children}</Providers>
           </main>
         </div>
       </body>

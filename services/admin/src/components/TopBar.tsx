@@ -7,6 +7,7 @@
 import Link from "next/link";
 
 import { useApprovalStore } from "@/stores/approvalStore";
+import { useDemoStore } from "@/stores/demoStore";
 import { useIncidentStore } from "@/stores/incidentStore";
 import { useUiStore } from "@/stores/uiStore";
 import type { BreadcrumbItem } from "@/types";
@@ -68,6 +69,8 @@ export function TopBar({ breadcrumbs, title }: TopBarProps) {
   const unreadCount = useUiStore((s) => s.getUnreadCount());
   const pendingApprovals = useApprovalStore((s) => s.getPendingCount());
   const p1Count = useIncidentStore((s) => s.getP1Count());
+  const isDemoMode = useDemoStore((s) => s.isDemoMode);
+  const toggleDemoMode = useDemoStore((s) => s.toggleDemoMode);
 
   const hasUrgentItems = p1Count > 0 || pendingApprovals > 0;
 
@@ -156,6 +159,26 @@ export function TopBar({ breadcrumbs, title }: TopBarProps) {
             )}
           </div>
         )}
+
+        {/* Demo / Live toggle */}
+        <button
+          type="button"
+          onClick={toggleDemoMode}
+          aria-label={isDemoMode ? "Switch to Live mode" : "Switch to Demo mode"}
+          aria-pressed={!isDemoMode}
+          className={[
+            "hidden sm:flex items-center gap-1.5 rounded-full px-3 py-1 text-2xs font-mono font-bold uppercase border transition-colors",
+            isDemoMode
+              ? "bg-brand-amber/10 text-brand-amber border-brand-amber/30 hover:bg-brand-amber/20"
+              : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-green/20",
+          ].join(" ")}
+        >
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${isDemoMode ? "bg-brand-amber" : "bg-brand-green animate-pulse"}`}
+            aria-hidden="true"
+          />
+          {isDemoMode ? "Demo" : "Live"}
+        </button>
 
         {/* Notification bell */}
         <button
