@@ -4,6 +4,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { pricingPlans } from "@/data/pricing";
 
+const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://gridmind-user.vercel.app";
+
+function resolveHref(href: string): string {
+  if (href.startsWith("/")) return `${APP_URL}${href}`;
+  return href;
+}
+
 export default function PricingSection() {
   const [annual, setAnnual] = useState(false);
 
@@ -136,7 +143,7 @@ export default function PricingSection() {
                 </ul>
 
                 <a
-                  href={plan.ctaHref}
+                  href={resolveHref(plan.ctaHref)}
                   className={`mt-8 block rounded-lg px-4 py-3 text-center text-sm font-semibold transition-colors ${
                     plan.highlighted
                       ? "bg-primary text-white hover:bg-primary-600"

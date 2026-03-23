@@ -18,7 +18,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "Email notifications",
     ],
     cta: "Start Free Trial",
-    ctaHref: "https://app.gridmindai.dev/register",
+    ctaHref: "/register",
   },
   {
     name: "Growth",
@@ -38,7 +38,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "Custom alert rules",
     ],
     cta: "Start Free Trial",
-    ctaHref: "https://app.gridmindai.dev/register",
+    ctaHref: "/register",
   },
   {
     name: "Scale",
@@ -59,7 +59,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "SSO (OIDC)",
     ],
     cta: "Start Free Trial",
-    ctaHref: "https://app.gridmindai.dev/register",
+    ctaHref: "/register",
   },
   {
     name: "Enterprise",
