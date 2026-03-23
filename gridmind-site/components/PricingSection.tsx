@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { pricingPlans } from "@/data/pricing";
+import { pricingPlans, VENDOR_COLORS, COST_FOOTNOTE } from "@/data/pricing";
 
 const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://app.gridmindai.dev";
 
@@ -11,8 +11,24 @@ function resolveHref(href: string): string {
   return href;
 }
 
+function CheckIcon() {
+  return (
+    <svg
+      className="mt-0.5 h-4 w-4 shrink-0 text-emerald"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+    </svg>
+  );
+}
+
 export default function PricingSection() {
   const [annual, setAnnual] = useState(false);
+  const [expandedPlan, setExpandedPlan] = useState<string | null>("Growth");
 
   return (
     <section
@@ -21,23 +37,27 @@ export default function PricingSection() {
       aria-labelledby="pricing-heading"
     >
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
+
+        {/* Header */}
+        <div className="mx-auto max-w-3xl text-center">
           <span className="font-mono text-sm text-amber">Pricing</span>
           <h2
             id="pricing-heading"
             className="mt-2 font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl"
           >
-            Simple, Transparent Pricing
+            One platform fee. Your cloud, your cost.
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            14-day trial on every plan. Cancel anytime. Credit card required.
+            GridMind manages your databases on AWS, Google Cloud, Azure, or DigitalOcean.
+            You pay us for the platform. Your cloud bill stays between you and your provider — we never mark up infrastructure.
+          </p>
+          <p className="mt-2 text-sm text-slate-500">
+            14-day trial on every plan · Cancel anytime · Credit card required
           </p>
 
           {/* Billing toggle */}
           <div className="mt-8 flex items-center justify-center gap-3">
-            <span
-              className={`text-sm ${!annual ? "text-white" : "text-slate-500"}`}
-            >
+            <span className={`text-sm ${!annual ? "text-white" : "text-slate-500"}`}>
               Monthly
             </span>
             <button
@@ -56,20 +76,19 @@ export default function PricingSection() {
                 }`}
               />
             </button>
-            <span
-              className={`text-sm ${annual ? "text-white" : "text-slate-500"}`}
-            >
-              Annual{" "}
-              <span className="text-emerald">(Save ~17%)</span>
+            <span className={`text-sm ${annual ? "text-white" : "text-slate-500"}`}>
+              Annual <span className="text-emerald">(Save ~17%)</span>
             </span>
           </div>
         </div>
 
+        {/* Plan cards */}
         <div className="mx-auto mt-16 grid max-w-6xl gap-6 lg:grid-cols-4">
           {pricingPlans.map((plan, index) => {
             const isEnterprise = plan.monthlyPrice === null;
             const displayPrice = annual ? plan.annualPrice : plan.monthlyPrice;
             const pricePeriod = annual ? "/yr" : "/mo";
+            const isExpanded = expandedPlan === plan.name;
 
             return (
               <motion.div
@@ -78,7 +97,7 @@ export default function PricingSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={`relative flex flex-col rounded-xl border p-8 ${
+                className={`relative flex flex-col rounded-xl border ${
                   plan.highlighted
                     ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10"
                     : "border-white/10 bg-slate-900/50"
@@ -90,77 +109,247 @@ export default function PricingSection() {
                   </span>
                 )}
 
-                <h3 className="font-heading text-xl font-bold text-white">
-                  {plan.name}
-                </h3>
-
-                <div className="mt-4">
-                  {isEnterprise ? (
-                    <p className="font-heading text-4xl font-bold text-white">
-                      Custom
+                <div className="p-8 flex flex-col flex-1">
+                  {/* Plan name + tagline */}
+                  <div>
+                    <h3 className="font-heading text-xl font-bold text-white">
+                      {plan.name}
+                    </h3>
+                    <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+                      {plan.tagline}
                     </p>
-                  ) : (
-                    <p className="flex items-baseline gap-1">
-                      <span className="font-heading text-4xl font-bold text-white">
-                        ${displayPrice?.toLocaleString()}
-                      </span>
-                      <span className="text-sm text-slate-500">{pricePeriod}</span>
+                  </div>
+
+                  {/* Price */}
+                  <div className="mt-5">
+                    {isEnterprise ? (
+                      <p className="font-heading text-4xl font-bold text-white">Custom</p>
+                    ) : (
+                      <p className="flex items-baseline gap-1">
+                        <span className="font-heading text-4xl font-bold text-white">
+                          ${displayPrice?.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-slate-500">{pricePeriod}</span>
+                      </p>
+                    )}
+                    <p className="mt-1 text-xs text-slate-600">Platform fee only</p>
+                  </div>
+
+                  {/* Usage stats */}
+                  <div className="mt-5 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-500">Deployments</span>
+                      <span className="font-mono text-slate-300">{plan.deployments}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-500">AI decisions</span>
+                      <span className="font-mono text-slate-300">{plan.aiUsage}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-500">Query volume</span>
+                      <span className="font-mono text-slate-300">{plan.queryVolume}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-slate-500">Team members</span>
+                      <span className="font-mono text-slate-300">{plan.teamMembers}</span>
+                    </div>
+                  </div>
+
+                  {/* Vendor badges */}
+                  <div className="mt-5">
+                    <p className="text-xs font-mono uppercase tracking-wider text-slate-600 mb-2">
+                      Cloud providers
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {plan.vendorSupport.map((v) => (
+                        <span
+                          key={v.name}
+                          className={`inline-flex items-center rounded border px-2 py-0.5 text-xs font-semibold ${
+                            VENDOR_COLORS[v.name] ?? "text-slate-400 bg-slate-800 border-white/10"
+                          }`}
+                        >
+                          {v.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Expand / collapse vendor details */}
+                  <button
+                    type="button"
+                    onClick={() => setExpandedPlan(isExpanded ? null : plan.name)}
+                    className="mt-4 flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                  >
+                    <svg
+                      className={`h-3 w-3 transition-transform ${isExpanded ? "rotate-90" : ""}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    {isExpanded ? "Hide" : "Show"} provider details
+                  </button>
+
+                  {/* Vendor detail table */}
+                  {isExpanded && (
+                    <div className="mt-3 space-y-3">
+                      {plan.vendorSupport.map((v) => (
+                        <div
+                          key={v.name}
+                          className="rounded-lg border border-white/5 bg-slate-950/60 p-3"
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span
+                              className={`inline-flex items-center rounded border px-1.5 py-0.5 text-xs font-bold ${
+                                VENDOR_COLORS[v.name] ?? "text-slate-400 bg-slate-800 border-white/10"
+                              }`}
+                            >
+                              {v.name}
+                            </span>
+                            <span className="text-xs text-slate-300 font-medium">
+                              {v.tier}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-500 leading-relaxed">
+                            Storage: <span className="text-slate-400">{v.storageRange}</span>
+                            {" · "}
+                            {v.note}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Feature list */}
+                  <ul className="mt-6 flex-1 space-y-2.5" role="list">
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-start gap-2 text-sm text-slate-400"
+                      >
+                        <CheckIcon />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  <a
+                    href={resolveHref(plan.ctaHref)}
+                    className={`mt-8 block rounded-lg px-4 py-3 text-center text-sm font-semibold transition-colors ${
+                      plan.highlighted
+                        ? "bg-primary text-white hover:bg-primary-600"
+                        : "border border-white/20 text-white hover:bg-white/5"
+                    }`}
+                  >
+                    {plan.cta}
+                  </a>
+                  {!isEnterprise && (
+                    <p className="mt-3 text-center text-xs text-slate-600">
+                      14-day trial · Credit card required
                     </p>
                   )}
                 </div>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
-                  <span className="rounded bg-slate-800 px-2 py-1">
-                    {plan.deployments} deploys
-                  </span>
-                  <span className="rounded bg-slate-800 px-2 py-1">
-                    {plan.agents} agents
-                  </span>
-                  <span className="rounded bg-slate-800 px-2 py-1">
-                    {plan.teamMembers} members
-                  </span>
-                </div>
-
-                <ul className="mt-6 flex-1 space-y-3" role="list">
-                  {plan.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-start gap-2 text-sm text-slate-400"
-                    >
-                      <svg
-                        className="mt-0.5 h-4 w-4 shrink-0 text-emerald"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href={resolveHref(plan.ctaHref)}
-                  className={`mt-8 block rounded-lg px-4 py-3 text-center text-sm font-semibold transition-colors ${
-                    plan.highlighted
-                      ? "bg-primary text-white hover:bg-primary-600"
-                      : "border border-white/20 text-white hover:bg-white/5"
-                  }`}
-                >
-                  {plan.cta}
-                </a>
-                {!isEnterprise && (
-                  <p className="mt-3 text-center text-xs text-slate-600">
-                    14-day trial · Credit card required
-                  </p>
-                )}
               </motion.div>
             );
           })}
         </div>
+
+        {/* Infrastructure cost callout */}
+        <div className="mx-auto mt-12 max-w-4xl rounded-xl border border-amber/20 bg-amber/5 p-6">
+          <div className="flex gap-4">
+            <svg
+              className="h-5 w-5 shrink-0 text-amber mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <div>
+              <p className="text-sm font-semibold text-amber mb-1">
+                About infrastructure costs
+              </p>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                {COST_FOOTNOTE}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Provider comparison table */}
+        <div className="mx-auto mt-16 max-w-5xl">
+          <h3 className="text-center font-heading text-lg font-semibold text-white mb-2">
+            Supported cloud providers by plan
+          </h3>
+          <p className="text-center text-sm text-slate-500 mb-8">
+            GridMind connects directly to your cloud account via read/write API credentials — no data leaves your VPC.
+          </p>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-3 px-4 text-slate-500 font-medium w-36">Provider</th>
+                  <th className="text-center py-3 px-4 text-slate-400 font-semibold">Starter</th>
+                  <th className="text-center py-3 px-4 text-primary font-semibold">Growth</th>
+                  <th className="text-center py-3 px-4 text-slate-400 font-semibold">Scale</th>
+                  <th className="text-center py-3 px-4 text-slate-400 font-semibold">Enterprise</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    name: "AWS",
+                    services: ["RDS (MySQL, Postgres)", "Aurora Serverless v2", "Aurora Global + Multi-Region", "Any RDS/Aurora/Redshift"],
+                  },
+                  {
+                    name: "Google Cloud",
+                    services: [null, "Cloud SQL (Enterprise)", "AlloyDB / Enterprise Plus", "Spanner / BigQuery / AlloyDB"],
+                  },
+                  {
+                    name: "Azure",
+                    services: [null, null, "Azure Database (Flexible)", "Any Azure Database service"],
+                  },
+                  {
+                    name: "DigitalOcean",
+                    services: ["Managed Databases (Basic)", "Managed Databases (Standard)", "Managed Databases (Premium)", "Custom + Reserved capacity"],
+                  },
+                ].map((row) => (
+                  <tr
+                    key={row.name}
+                    className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <td className="py-4 px-4">
+                      <span
+                        className={`inline-flex items-center rounded border px-2 py-0.5 text-xs font-bold ${
+                          VENDOR_COLORS[row.name] ?? "text-slate-400 bg-slate-800 border-white/10"
+                        }`}
+                      >
+                        {row.name}
+                      </span>
+                    </td>
+                    {row.services.map((service, i) => (
+                      <td key={i} className="py-4 px-4 text-center">
+                        {service ? (
+                          <span className="text-xs text-slate-400">{service}</span>
+                        ) : (
+                          <span className="text-slate-700 text-lg" aria-label="Not available">—</span>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </section>
   );

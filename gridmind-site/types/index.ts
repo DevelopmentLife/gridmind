@@ -32,8 +32,16 @@ export interface Agent {
   readonly tier: AgentTier;
 }
 
+export interface PricingVendor {
+  readonly name: string;
+  readonly tier: string; // e.g. "RDS / Managed DB", "Aurora / Cloud SQL"
+  readonly storageRange: string;
+  readonly note: string;
+}
+
 export interface PricingPlan {
   readonly name: string;
+  readonly tagline: string;
   readonly monthlyPrice: number | null;
   readonly annualPrice: number | null;
   readonly deployments: string;
@@ -41,6 +49,9 @@ export interface PricingPlan {
   readonly teamMembers: string;
   readonly highlighted: boolean;
   readonly features: readonly string[];
+  readonly vendorSupport: readonly PricingVendor[];
+  readonly aiUsage: string;
+  readonly queryVolume: string;
   readonly cta: string;
   readonly ctaHref: string;
 }
