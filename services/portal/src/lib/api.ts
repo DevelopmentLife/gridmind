@@ -1,4 +1,23 @@
-import type { ApiError, AuthTokens } from "@/types";
+import type {
+  ApiError,
+  AuthTokens,
+  User,
+  Organization,
+  Deployment,
+  DeploymentMetrics,
+  SparklinePoint,
+  DatabaseEngine,
+  Agent,
+  AgentActivity,
+  Incident,
+  Approval,
+  BillingInfo,
+  PlanTier,
+  ApiKey,
+  TeamMember,
+  NotificationPreferences,
+  ChatConversation,
+} from "@/types";
 
 const API_BASE_URL = process.env["NEXT_PUBLIC_API_URL"] ?? "http://localhost:8000";
 
@@ -136,8 +155,8 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresAt: string;
-  user: import("@/types").User;
-  org: import("@/types").Organization;
+  user: User;
+  org: Organization;
 }
 
 export const auth = {
@@ -172,31 +191,31 @@ export const auth = {
       skipAuth: true,
     }),
 
-  me: () => request<{ user: import("@/types").User; org: import("@/types").Organization }>("/api/v1/auth/me"),
+  me: () => request<{ user: User; org: Organization }>("/api/v1/auth/me"),
 };
 
 // ─── Deployments endpoints ────────────────────────────────────────────────────
 
 export const deployments = {
   list: () =>
-    request<import("@/types").Deployment[]>("/api/v1/deployments"),
+    request<Deployment[]>("/api/v1/deployments"),
 
   get: (id: string) =>
-    request<import("@/types").Deployment>(`/api/v1/deployments/${id}`),
+    request<Deployment>(`/api/v1/deployments/${id}`),
 
   getMetrics: (id: string) =>
-    request<import("@/types").DeploymentMetrics>(`/api/v1/deployments/${id}/metrics`),
+    request<DeploymentMetrics>(`/api/v1/deployments/${id}/metrics`),
 
   getSparkline: (id: string, metric: string) =>
-    request<import("@/types").SparklinePoint[]>(`/api/v1/deployments/${id}/metrics/${metric}/sparkline`),
+    request<SparklinePoint[]>(`/api/v1/deployments/${id}/metrics/${metric}/sparkline`),
 
   create: (payload: {
     name: string;
-    engine: import("@/types").DatabaseEngine;
+    engine: DatabaseEngine;
     region: string;
     instanceType: string;
   }) =>
-    request<import("@/types").Deployment>("/api/v1/deployments", {
+    request<Deployment>("/api/v1/deployments", {
       method: "POST",
       body: payload,
     }),
@@ -210,16 +229,16 @@ export const deployments = {
 export const agents = {
   list: (deploymentId?: string) => {
     const qs = deploymentId ? `?deployment_id=${deploymentId}` : "";
-    return request<import("@/types").Agent[]>(`/api/v1/agents${qs}`);
+    return request<Agent[]>(`/api/v1/agents${qs}`);
   },
 
   get: (id: string) =>
-    request<import("@/types").Agent>(`/api/v1/agents/${id}`),
+    request<Agent>(`/api/v1/agents/${id}`),
 
   activity: (deploymentId?: string, limit = 50) => {
     const params = new URLSearchParams({ limit: String(limit) });
     if (deploymentId) params.set("deployment_id", deploymentId);
-    return request<import("@/types").AgentActivity[]>(`/api/v1/agents/activity?${params.toString()}`);
+    return request<AgentActivity[]>(`/api/v1/agents/activity?${params.toString()}`);
   },
 };
 
@@ -228,17 +247,17 @@ export const agents = {
 export const incidents = {
   list: (params?: { status?: string; severity?: string; deploymentId?: string }) => {
     const qs = params ? "?" + new URLSearchParams(params as Record<string, string>).toString() : "";
-    return request<import("@/types").Incident[]>(`/api/v1/incidents${qs}`);
+    return request<Incident[]>(`/api/v1/incidents${qs}`);
   },
 
   get: (id: string) =>
-    request<import("@/types").Incident>(`/api/v1/incidents/${id}`),
+    request<Incident>(`/api/v1/incidents/${id}`),
 
   acknowledge: (id: string) =>
-    request<import("@/types").Incident>(`/api/v1/incidents/${id}/acknowledge`, { method: "POST" }),
+    request<Incident>(`/api/v1/incidents/${id}/acknowledge`, { method: "POST" }),
 
   resolve: (id: string, resolution: string) =>
-    request<import("@/types").Incident>(`/api/v1/incidents/${id}/resolve`, {
+    request<Incident>(`/api/v1/incidents/${id}/resolve`, {
       method: "POST",
       body: { resolution },
     }),
@@ -249,20 +268,20 @@ export const incidents = {
 export const approvals = {
   list: (status?: string) => {
     const qs = status ? `?status=${status}` : "";
-    return request<import("@/types").Approval[]>(`/api/v1/approvals${qs}`);
+    return request<Approval[]>(`/api/v1/approvals${qs}`);
   },
 
   get: (id: string) =>
-    request<import("@/types").Approval>(`/api/v1/approvals/${id}`),
+    request<Approval>(`/api/v1/approvals/${id}`),
 
   approve: (id: string, justification?: string) =>
-    request<import("@/types").Approval>(`/api/v1/approvals/${id}/approve`, {
+    request<Approval>(`/api/v1/approvals/${id}/approve`, {
       method: "POST",
       body: { justification },
     }),
 
   reject: (id: string, reason: string) =>
-    request<import("@/types").Approval>(`/api/v1/approvals/${id}/reject`, {
+    request<Approval>(`/api/v1/approvals/${id}/reject`, {
       method: "POST",
       body: { reason },
     }),
@@ -272,12 +291,12 @@ export const approvals = {
 
 export const billing = {
   info: () =>
-    request<import("@/types").BillingInfo>("/api/v1/billing"),
+    request<BillingInfo>("/api/v1/billing"),
 
   createPortalSession: () =>
     request<{ url: string }>("/api/v1/billing/portal-session", { method: "POST" }),
 
-  createCheckout: (planTier: import("@/types").PlanTier) =>
+  createCheckout: (planTier: PlanTier) =>
     request<{ url: string }>("/api/v1/billing/checkout", {
       method: "POST",
       body: { plan_tier: planTier },
@@ -288,9 +307,9 @@ export const billing = {
 
 export const settings = {
   apiKeys: {
-    list: () => request<import("@/types").ApiKey[]>("/api/v1/api-keys"),
+    list: () => request<ApiKey[]>("/api/v1/api-keys"),
     create: (name: string) =>
-      request<{ key: string; apiKey: import("@/types").ApiKey }>("/api/v1/api-keys", {
+      request<{ key: string; apiKey: ApiKey }>("/api/v1/api-keys", {
         method: "POST",
         body: { name },
       }),
@@ -299,8 +318,8 @@ export const settings = {
   },
 
   team: {
-    list: () => request<import("@/types").TeamMember[]>("/api/v1/users"),
-    invite: (email: string, role: import("@/types").User["role"]) =>
+    list: () => request<TeamMember[]>("/api/v1/users"),
+    invite: (email: string, role: User["role"]) =>
       request<void>("/api/v1/users/invite", { method: "POST", body: { email, role } }),
     remove: (userId: string) =>
       request<void>(`/api/v1/users/${userId}`, { method: "DELETE" }),
@@ -308,7 +327,7 @@ export const settings = {
 
   profile: {
     update: (payload: { fullName?: string; email?: string }) =>
-      request<import("@/types").User>("/api/v1/users/me", { method: "PATCH", body: payload }),
+      request<User>("/api/v1/users/me", { method: "PATCH", body: payload }),
     changePassword: (currentPassword: string, newPassword: string) =>
       request<void>("/api/v1/users/me/password", {
         method: "POST",
@@ -317,9 +336,9 @@ export const settings = {
   },
 
   notifications: {
-    get: () => request<import("@/types").NotificationPreferences>("/api/v1/users/me/notifications"),
-    update: (prefs: Partial<import("@/types").NotificationPreferences>) =>
-      request<import("@/types").NotificationPreferences>("/api/v1/users/me/notifications", {
+    get: () => request<NotificationPreferences>("/api/v1/users/me/notifications"),
+    update: (prefs: Partial<NotificationPreferences>) =>
+      request<NotificationPreferences>("/api/v1/users/me/notifications", {
         method: "PATCH",
         body: prefs,
       }),
@@ -331,7 +350,7 @@ export const settings = {
 export const chat = {
   history: (conversationId?: string) => {
     const qs = conversationId ? `?conversation_id=${conversationId}` : "";
-    return request<import("@/types").ChatConversation[]>(`/api/v1/chat${qs}`);
+    return request<ChatConversation[]>(`/api/v1/chat${qs}`);
   },
 
   /**
