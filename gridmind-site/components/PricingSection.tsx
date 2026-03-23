@@ -30,7 +30,7 @@ export default function PricingSection() {
             Simple, Transparent Pricing
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            14-day trial or $5 — whichever comes first. Credit card required.
+            14-day trial on every plan. Cancel anytime. Credit card required.
           </p>
 
           {/* Billing toggle */}
@@ -154,7 +154,7 @@ export default function PricingSection() {
                 </a>
                 {!isEnterprise && (
                   <p className="mt-3 text-center text-xs text-slate-600">
-                    14-day or $5 trial · Credit card required
+                    14-day trial · Credit card required
                   </p>
                 )}
               </motion.div>
