@@ -189,6 +189,7 @@ export const agentsApi = {
 // ---------------------------------------------------------------------------
 
 export interface TenantsListParams {
+  [key: string]: string | number | boolean | undefined;
   search?: string;
   status?: string;
   tier?: string;
@@ -218,6 +219,7 @@ export const tenantsApi = {
 // ---------------------------------------------------------------------------
 
 export interface DeploymentsListParams {
+  [key: string]: string | number | boolean | undefined;
   search?: string;
   tenantId?: string;
   status?: string;
@@ -239,6 +241,7 @@ export const deploymentsApi = {
 // ---------------------------------------------------------------------------
 
 export interface IncidentsListParams {
+  [key: string]: string | number | boolean | undefined;
   search?: string;
   severity?: string;
   status?: string;
