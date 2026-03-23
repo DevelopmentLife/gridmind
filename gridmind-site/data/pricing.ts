@@ -17,7 +17,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "7-day data retention",
       "Email notifications",
     ],
-    cta: "Start Free Trial",
+    cta: "Start Trial",
     ctaHref: "/register",
   },
   {
@@ -37,7 +37,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "Slack & email notifications",
       "Custom alert rules",
     ],
-    cta: "Start Free Trial",
+    cta: "Start Trial",
     ctaHref: "/register",
   },
   {
@@ -58,7 +58,7 @@ export const pricingPlans: readonly PricingPlan[] = [
       "Custom agent policies",
       "SSO (OIDC)",
     ],
-    cta: "Start Free Trial",
+    cta: "Start Trial",
     ctaHref: "/register",
   },
   {

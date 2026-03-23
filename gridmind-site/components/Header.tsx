@@ -62,7 +62,7 @@ export default function Header() {
             href={`${APP_URL}/register`}
             className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
           >
-            Start Free Trial
+            Start 14-Day Trial
           </a>
         </div>
 
@@ -120,7 +120,7 @@ export default function Header() {
                 href={`${APP_URL}/register`}
                 className="block rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-600"
               >
-                Start Free Trial
+                Start 14-Day Trial
               </a>
             </li>
           </ul>

@@ -59,7 +59,7 @@ export default function HeroSection() {
             href={`${APP_URL}/register`}
             className="rounded-lg bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary-600 hover:shadow-primary/40"
           >
-            Start Free Trial
+            Start 14-Day Trial
           </a>
           <a
             href="#how-it-works"
