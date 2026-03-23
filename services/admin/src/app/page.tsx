@@ -90,7 +90,6 @@ function StatCard({ label, value, subtext, color = "text-brand-text-primary", hr
 
 export default function DashboardPage() {
   const agents = useAgentStore((s) => s.agents);
-  const fleetHealth = useAgentStore((s) => s.fleetHealth);
   const healthyCount = useAgentStore((s) => s.getHealthyCount());
   const degradedCount = useAgentStore((s) => s.getDegradedCount());
   const offlineCount = useAgentStore((s) => s.getOfflineCount());

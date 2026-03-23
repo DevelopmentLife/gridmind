@@ -28,6 +28,7 @@ const MRR_DATA = [
   { label: "Mar", value: 87420 },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SUBSCRIPTION_STATUS_COLORS: Record<string, string> = {
   active: "text-brand-green",
   trialing: "text-brand-cyan",
