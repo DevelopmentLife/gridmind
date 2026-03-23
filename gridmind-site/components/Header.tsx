@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "Agents", href: "#agents" },
@@ -30,9 +31,9 @@ export default function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4"
         aria-label="Main navigation"
       >
-        <a href="/" className="font-heading text-xl font-bold text-white">
+        <Link href="/" className="font-heading text-xl font-bold text-white">
           Grid<span className="text-primary">Mind</span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-8 md:flex" role="list">

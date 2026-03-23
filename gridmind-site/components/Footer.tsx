@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 
 const FOOTER_LINKS = {
   Product: [
@@ -47,9 +48,9 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-5">
           {/* Brand + newsletter */}
           <div className="lg:col-span-2">
-            <a href="/" className="font-heading text-xl font-bold text-white">
+            <Link href="/" className="font-heading text-xl font-bold text-white">
               Grid<span className="text-primary">Mind</span>
-            </a>
+            </Link>
             <p className="mt-4 max-w-sm text-sm text-slate-500">
               AI-native database operations. 24 autonomous agents that monitor,
               optimize, scale, and secure your databases.
