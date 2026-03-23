@@ -5,6 +5,8 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+import logging
+
 import structlog
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,7 +39,7 @@ def _configure_structlog() -> None:
             else structlog.processors.JSONRenderer(),
         ],
         wrapper_class=structlog.make_filtering_bound_logger(
-            structlog.get_level_from_name(get_settings().log_level),
+            logging.getLevelName(get_settings().log_level.upper()),
         ),
         context_class=dict,
         logger_factory=structlog.PrintLoggerFactory(),
