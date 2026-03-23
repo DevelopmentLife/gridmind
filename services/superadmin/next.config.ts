@@ -4,9 +4,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
-  experimental: {
-    typedRoutes: false,
-  },
+  typedRoutes: false,
   env: {
     NEXT_PUBLIC_GATEWAY_URL:
       process.env["NEXT_PUBLIC_GATEWAY_URL"] ?? "http://localhost:8000",

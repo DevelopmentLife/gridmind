@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { TopBar } from "@/components/TopBar";
 import type { Incident } from "@/types";
 import {
-  formatDatetime,
+  // formatDatetime — reserved for future use
   formatRelative,
   incidentSeverityBg,
   incidentSeverityLabel,

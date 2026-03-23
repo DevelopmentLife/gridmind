@@ -63,7 +63,7 @@ export default function TenantsPage() {
   });
 
   const handleImpersonate = (
-    tenantId: string,
+    _tenantId: string,
     _reason: string,
     _totpCode: string
   ) => {
