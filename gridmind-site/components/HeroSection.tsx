@@ -79,7 +79,7 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.0 }}
         >
-          14-day free trial. No credit card required.
+          14-day free trial. Credit card required.
         </motion.p>
       </div>
 
