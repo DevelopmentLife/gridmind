@@ -9,7 +9,7 @@ const FOOTER_LINKS = {
     { label: "Pricing", href: "#pricing" },
     { label: "Engines", href: "#engines" },
     { label: "Docs", href: "#" },
-    { label: "Blog", href: "#" },
+    { label: "Blog", href: "/blog" },
     { label: "Status", href: "#" },
   ],
   Legal: [

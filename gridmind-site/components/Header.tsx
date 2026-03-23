@@ -50,6 +50,11 @@ export default function Header() {
               </a>
             </li>
           ))}
+          <li key="blog">
+            <Link href="/blog" className="text-sm text-slate-300 transition-colors hover:text-white">
+              Blog
+            </Link>
+          </li>
         </ul>
 
         <div className="hidden md:block">
@@ -101,6 +106,15 @@ export default function Header() {
                 </a>
               </li>
             ))}
+            <li key="blog">
+              <Link
+                href="/blog"
+                className="block rounded-lg px-3 py-2 text-base text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
+            </li>
             <li className="pt-2">
               <a
                 href={`${APP_URL}/register`}
