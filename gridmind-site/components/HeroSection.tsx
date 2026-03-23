@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import NeuralMesh from "./NeuralMesh";
 
-const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://gridmind-user.vercel.app";
+const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://app.gridmindai.dev";
 
 export default function HeroSection() {
   return (

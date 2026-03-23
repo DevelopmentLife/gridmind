@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { pricingPlans } from "@/data/pricing";
 
-const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://gridmind-user.vercel.app";
+const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://app.gridmindai.dev";
 
 function resolveHref(href: string): string {
   if (href.startsWith("/")) return `${APP_URL}${href}`;

@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 
-const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://gridmind-user.vercel.app";
+const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://app.gridmindai.dev";
 
 const NAV_LINKS = [
   { label: "Agents", href: "#agents" },
