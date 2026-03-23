@@ -33,7 +33,7 @@ _messages: dict[str, list[dict]] = {}  # conversation_id -> [messages]
 # POST /api/v1/chat — Chat message
 # ---------------------------------------------------------------------------
 
-@router.post("")
+@router.post("", response_model=None)
 async def chat(
     body: ChatMessage,
     user: TokenPayload = Depends(get_current_user),
