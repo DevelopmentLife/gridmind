@@ -19,7 +19,7 @@ import type {
   ChatConversation,
 } from "@/types";
 
-const API_BASE_URL = process.env["NEXT_PUBLIC_API_URL"] ?? "http://localhost:8000";
+const API_BASE_URL = process.env["NEXT_PUBLIC_GATEWAY_URL"] ?? "http://localhost:8000";
 
 // ─── Token storage (memory-based; authStore is source of truth) ───────────────
 
