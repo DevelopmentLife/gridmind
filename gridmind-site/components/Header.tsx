@@ -3,6 +3,8 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 
+const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://gridmind-user.vercel.app";
+
 const NAV_LINKS = [
   { label: "Agents", href: "#agents" },
   { label: "Pricing", href: "#pricing" },
@@ -52,7 +54,7 @@ export default function Header() {
 
         <div className="hidden md:block">
           <a
-            href="https://app.gridmind.io/register"
+            href={`${APP_URL}/register`}
             className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
           >
             Start Free Trial
@@ -101,7 +103,7 @@ export default function Header() {
             ))}
             <li className="pt-2">
               <a
-                href="https://app.gridmind.io/register"
+                href={`${APP_URL}/register`}
                 className="block rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-600"
               >
                 Start Free Trial

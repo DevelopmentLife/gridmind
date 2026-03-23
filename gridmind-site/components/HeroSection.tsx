@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import NeuralMesh from "./NeuralMesh";
 
+const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://gridmind-user.vercel.app";
+
 export default function HeroSection() {
   return (
     <section
@@ -54,7 +56,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.8 }}
         >
           <a
-            href="https://app.gridmind.io/register"
+            href={`${APP_URL}/register`}
             className="rounded-lg bg-primary px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary-600 hover:shadow-primary/40"
           >
             Start Free Trial
