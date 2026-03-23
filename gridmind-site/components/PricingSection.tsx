@@ -98,15 +98,12 @@ export default function PricingSection() {
                     </p>
                   </div>
 
-                  {/* Usage-based pricing label */}
+                  {/* Pricing model note */}
                   <div className="mt-5">
-                    {isEnterprise ? (
-                      <p className="font-heading text-2xl font-bold text-white">Custom pricing</p>
-                    ) : (
-                      <p className="font-heading text-2xl font-bold text-white">Usage-based</p>
-                    )}
-                    <p className="mt-1 text-xs text-slate-500">
-                      Priced on agent decisions + hosting
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      {isEnterprise
+                        ? "Priced to your deployment scale and contract terms."
+                        : "Priced on the AI decisions your agents make and the infrastructure they manage."}
                     </p>
                   </div>
 
