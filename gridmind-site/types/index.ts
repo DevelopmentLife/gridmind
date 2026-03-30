@@ -60,16 +60,17 @@ export interface PricingPlan {
   readonly ctaHref: string;
 }
 
-export const ENGINE_STATUS = {
+export const FRAMEWORK_STATUS = {
   AVAILABLE: "available",
   COMING_SOON: "coming_soon",
+  ENTERPRISE: "enterprise",
 } as const;
 
-export type EngineStatus = (typeof ENGINE_STATUS)[keyof typeof ENGINE_STATUS];
+export type FrameworkStatus = (typeof FRAMEWORK_STATUS)[keyof typeof FRAMEWORK_STATUS];
 
-export interface Engine {
+export interface Framework {
   readonly name: string;
   readonly icon: string;
-  readonly status: EngineStatus;
-  readonly features: readonly string[];
+  readonly status: FrameworkStatus;
+  readonly description: string;
 }

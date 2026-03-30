@@ -58,7 +58,7 @@ export default function PricingSection() {
             and the infrastructure they manage. No flat platform fee. No surprises.
           </p>
           <p className="mt-2 text-sm text-slate-500">
-            14-day trial on every plan · Cancel anytime · Credit card required
+            14-day trial on every plan · Cancel anytime
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export default function PricingSection() {
                       <span className="font-mono text-slate-300">{plan.deployments}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-500">Query volume</span>
+                      <span className="text-slate-500">Agent decisions</span>
                       <span className="font-mono text-slate-300">{plan.queryVolume}</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
@@ -269,7 +269,7 @@ export default function PricingSection() {
                   </a>
                   {!isEnterprise && (
                     <p className="mt-3 text-center text-xs text-slate-600">
-                      14-day trial · Credit card required
+                      14-day trial · No credit card required
                     </p>
                   )}
                 </div>

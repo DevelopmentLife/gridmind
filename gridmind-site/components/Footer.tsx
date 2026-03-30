@@ -7,7 +7,7 @@ const FOOTER_LINKS = {
   Product: [
     { label: "Agents", href: "#agents" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Engines", href: "#engines" },
+    { label: "Frameworks", href: "#frameworks" },
     { label: "Docs", href: "#" },
     { label: "Blog", href: "/blog" },
     { label: "Status", href: "#" },
@@ -52,8 +52,8 @@ export default function Footer() {
               Grid<span className="text-primary">Mind</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm text-slate-500">
-              AI-native database operations. 24 autonomous agents that monitor,
-              optimize, scale, and secure your databases.
+              Agent infrastructure for startups. Deploy AI agent teams in minutes.
+              Scale to thousands of concurrent agents. Pay only for what runs.
             </p>
 
             <div className="mt-8">

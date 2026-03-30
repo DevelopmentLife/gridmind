@@ -41,7 +41,7 @@ export default function AgentShowcase() {
           </h2>
           <p className="mt-4 text-lg text-slate-400">
             Each agent is a specialized autonomous system that perceives,
-            reasons, and acts on your database infrastructure.
+            reasons, and acts on your agent infrastructure.
           </p>
         </div>
 

@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 const STEPS = [
   {
     number: "01",
-    title: "Connect",
-    description: "Link your database in 5 minutes. Provide connection credentials and GridMind securely connects to your PostgreSQL instance.",
+    title: "Define",
+    description: "Describe your agent team in a YAML config — or import from LangChain, CrewAI, or Claude Code.",
     icon: (
       <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.04a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.34 8.798" />
@@ -18,8 +18,8 @@ const STEPS = [
   },
   {
     number: "02",
-    title: "Deploy Agents",
-    description: "24 AI agents activate immediately. They begin profiling workloads, assessing security, and optimizing performance from minute one.",
+    title: "Deploy",
+    description: "GridMind provisions compute, wires agent messaging, assigns models by task type, and activates your fleet in minutes.",
     icon: (
       <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
@@ -31,8 +31,8 @@ const STEPS = [
   },
   {
     number: "03",
-    title: "Relax",
-    description: "Continuous monitoring, optimization, and healing. Your databases run at peak performance while you focus on building your product.",
+    title: "Scale",
+    description: "Agents spin up and down automatically with demand. You see cost per agent, per run, per customer — and pay only for what runs.",
     icon: (
       <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
@@ -61,7 +61,7 @@ export default function HowItWorks() {
             Up and Running in Minutes
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            Three steps to fully autonomous database operations.
+            Three steps to fully autonomous agent operations.
           </p>
         </div>
 

@@ -8,7 +8,7 @@ const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://app.gridmindai.de
 const NAV_LINKS = [
   { label: "Agents", href: "#agents" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Engines", href: "#engines" },
+  { label: "Frameworks", href: "#frameworks" },
   { label: "How It Works", href: "#how-it-works" },
 ] as const;
 
@@ -62,7 +62,7 @@ export default function Header() {
             href={`${APP_URL}/register`}
             className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
           >
-            Start 14-Day Trial
+            Join Waitlist
           </a>
         </div>
 
@@ -120,7 +120,7 @@ export default function Header() {
                 href={`${APP_URL}/register`}
                 className="block rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-600"
               >
-                Start 14-Day Trial
+                Join Waitlist
               </a>
             </li>
           </ul>

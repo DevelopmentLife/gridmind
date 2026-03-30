@@ -3,13 +3,13 @@ import "./globals.css";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "GridMind — AI-Native Database Operations",
+  title: "GridMind — Agentic Infrastructure Platform",
   description:
-    "24 autonomous AI agents that monitor, optimize, scale, heal, and secure your database deployments. Replace expensive manual DBA work with always-on intelligence.",
+    "Deploy, scale, and observe AI agent teams from a single config. GridMind is the infrastructure platform for AI-first startups.",
   openGraph: {
-    title: "GridMind — AI-Native Database Operations",
+    title: "GridMind — Agentic Infrastructure Platform",
     description:
-      "24 AI Agents. Zero DBAs. Your databases, fully autonomous.",
+      "Deploy, scale, and observe AI agent teams from a single config. GridMind is the infrastructure platform for AI-first startups.",
     siteName: "GridMind",
     type: "website",
     url: "https://gridmindai.dev",
@@ -18,15 +18,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GridMind — AI-Native Database Operations",
+        alt: "GridMind — Agentic Infrastructure Platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GridMind — AI-Native Database Operations",
+    title: "GridMind — Agentic Infrastructure Platform",
     description:
-      "24 AI Agents. Zero DBAs. Your databases, fully autonomous.",
+      "Deploy, scale, and observe AI agent teams from a single config. GridMind is the infrastructure platform for AI-first startups.",
   },
   robots: {
     index: true,

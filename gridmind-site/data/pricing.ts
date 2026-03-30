@@ -3,12 +3,12 @@ import type { PricingPlan } from "@/types";
 export const pricingPlans: readonly PricingPlan[] = [
   {
     name: "Starter",
-    tagline: "For teams running a handful of databases",
+    tagline: "For startups deploying their first agent team",
     deployments: "3",
     agents: "12",
     teamMembers: "5",
     highlighted: false,
-    queryVolume: "10M queries / mo",
+    queryVolume: "10M agent tasks / mo",
     agentCosts: [
       {
         model: "Claude Haiku 4.5",
@@ -31,12 +31,12 @@ export const pricingPlans: readonly PricingPlan[] = [
       },
     ],
     features: [
-      "3 database deployments",
+      "3 agent team deployments",
       "AWS RDS or DigitalOcean Managed DB",
       "Up to 500 GB managed storage",
       "12 of 24 AI agents active",
       "50K agent AI decisions / mo",
-      "10M queries analyzed / mo",
+      "10M agent tasks / mo",
       "5 team members",
       "7-day event & log retention",
       "Email notifications",
@@ -47,12 +47,12 @@ export const pricingPlans: readonly PricingPlan[] = [
   },
   {
     name: "Growth",
-    tagline: "For growing teams across multiple cloud providers",
+    tagline: "For teams scaling agent fleets across products",
     deployments: "10",
     agents: "24",
     teamMembers: "15",
     highlighted: true,
-    queryVolume: "100M queries / mo",
+    queryVolume: "100M agent tasks / mo",
     agentCosts: [
       {
         model: "Claude Haiku 4.5",
@@ -86,12 +86,12 @@ export const pricingPlans: readonly PricingPlan[] = [
       },
     ],
     features: [
-      "10 database deployments",
+      "10 agent team deployments",
       "AWS Aurora, GCP Cloud SQL, or DigitalOcean",
       "Up to 5 TB managed storage",
       "All 24 AI agents active",
       "500K agent AI decisions / mo",
-      "100M queries analyzed / mo",
+      "100M agent tasks / mo",
       "15 team members",
       "30-day event & log retention",
       "Slack & email notifications",
@@ -103,7 +103,7 @@ export const pricingPlans: readonly PricingPlan[] = [
   },
   {
     name: "Scale",
-    tagline: "For large deployments with enterprise-grade SLAs",
+    tagline: "For platforms running hundreds of concurrent agents",
     deployments: "50",
     agents: "24",
     teamMembers: "Unlimited",
@@ -153,12 +153,12 @@ export const pricingPlans: readonly PricingPlan[] = [
       },
     ],
     features: [
-      "50 database deployments",
+      "50 agent team deployments",
       "AWS Aurora Global, GCP AlloyDB, Azure, or DigitalOcean",
       "Up to 50 TB managed storage",
       "All 24 AI agents active",
       "2M agent AI decisions / mo",
-      "Unlimited query analysis",
+      "Unlimited agent tasks",
       "Unlimited team members",
       "90-day event & log retention",
       "All notification channels (Slack, PagerDuty, Webhook)",
@@ -171,7 +171,7 @@ export const pricingPlans: readonly PricingPlan[] = [
   },
   {
     name: "Enterprise",
-    tagline: "Custom contracts for regulated industries and multi-cloud fleets",
+    tagline: "For regulated industries and defense-adjacent deployments",
     deployments: "Unlimited",
     agents: "24",
     teamMembers: "Unlimited",
@@ -211,11 +211,11 @@ export const pricingPlans: readonly PricingPlan[] = [
       },
     ],
     features: [
-      "Unlimited deployments across any cloud",
+      "Unlimited agent team deployments",
       "AWS, Google Cloud, Azure, DigitalOcean — or on-prem",
       "Custom storage allocation per environment",
       "Custom AI model allocation per workload",
-      "Unlimited query analysis with custom retention",
+      "Unlimited agent tasks with custom retention",
       "All 24 AI agents + custom agent development",
       "Unlimited team members + custom RBAC",
       "Unlimited event retention",
