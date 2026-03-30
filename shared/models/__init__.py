@@ -6,6 +6,7 @@ from shared.models.agent import AgentRegistration, AgentState
 from shared.models.approval import ApprovalRequest, ApprovalResponse
 from shared.models.audit import AuditEntry
 from shared.models.base import Base, TimestampMixin
+from shared.models.cost import AgentDecision, CostRollup
 from shared.models.billing import (
     Invoice,
     PaymentEvent,
@@ -19,14 +20,17 @@ from shared.models.incident import Incident
 from shared.models.membership import Membership
 from shared.models.tenant import Tenant
 from shared.models.user import User
+from shared.models.waitlist import WaitlistSignup
 
 __all__ = [
+    "AgentDecision",
     "AgentRegistration",
     "AgentState",
     "ApprovalRequest",
     "ApprovalResponse",
     "AuditEntry",
     "Base",
+    "CostRollup",
     "Campaign",
     "Deployment",
     "Incident",
@@ -40,4 +44,5 @@ __all__ = [
     "TimestampMixin",
     "UsageRecord",
     "User",
+    "WaitlistSignup",
 ]
