@@ -12,6 +12,8 @@ from gateway.schemas.billing import (
     CustomerResponse,
     MarginCalculationRequest,
     MarginCalculationResponse,
+    MeteredPriceCreate,
+    MeteredPriceResponse,
     PaymentMethodAttach,
     PaymentMethodResponse,
     SetupIntentResponse,
@@ -219,6 +221,34 @@ async def test_charge(
     svc = get_stripe_service()
     result = await svc.run_test_charge(body.customer_id)
     return TestChargeResponse(**result)
+
+
+# ---------------------------------------------------------------------------
+# POST /api/v1/billing/prices/metered — Create metered price
+# ---------------------------------------------------------------------------
+
+@router.post("/prices/metered", response_model=MeteredPriceResponse, status_code=201)
+async def create_metered_price(
+    body: MeteredPriceCreate,
+    user: TokenPayload = Depends(require_permission("billing:write")),
+) -> MeteredPriceResponse:
+    """Create a metered Stripe Price for per-agent-decision billing.
+
+    Sets up usage_type=metered so customers are billed based on reported
+    usage records (one record per agent decision batch).
+    """
+    svc = get_stripe_service()
+    try:
+        result = await svc.create_metered_price(
+            unit_amount=body.unit_amount,
+            currency=body.currency,
+            nickname=body.nickname,
+            product_id=body.product_id,
+        )
+        return MeteredPriceResponse(**result)
+    except Exception as exc:
+        logger.error("stripe_create_metered_price_failed", error=str(exc))
+        raise UpstreamError("Failed to create metered price.") from exc
 
 
 # ---------------------------------------------------------------------------

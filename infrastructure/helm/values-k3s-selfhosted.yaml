@@ -1,0 +1,137 @@
+###############################################################################
+# GridMind — K3s Self-Hosted Install Values
+#
+# Usage:
+#   helm install gridmind-gateway ./infrastructure/helm/gateway \
+#     -f infrastructure/helm/values-k3s-selfhosted.yaml \
+#     --set image.repository=<your-registry>/gridmind/gateway \
+#     --set image.tag=<version> \
+#     --namespace gridmind --create-namespace
+#
+# Prerequisites:
+#   - K3s >= v1.28 (https://k3s.io)
+#   - kubectl configured for your cluster
+#   - A container registry (local or remote)
+#   - PostgreSQL 16 and Redis 7 accessible from the cluster
+###############################################################################
+
+# ─────────────────────────────────────────────────────────
+# Replica counts — single-node K3s safe defaults
+# ─────────────────────────────────────────────────────────
+replicaCount: 1
+
+# ─────────────────────────────────────────────────────────
+# Resource limits — tuned for K3s nodes (2-4 vCPU, 4-8 GB RAM)
+# ─────────────────────────────────────────────────────────
+resources:
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "1000m"
+    memory: "1Gi"
+
+# ─────────────────────────────────────────────────────────
+# Ingress — uses K3s built-in Traefik
+# ─────────────────────────────────────────────────────────
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"   # requires cert-manager
+  hosts:
+    - host: api.gridmindai.dev    # replace with your domain
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: gridmind-gateway-tls
+      hosts:
+        - api.gridmindai.dev
+
+# ─────────────────────────────────────────────────────────
+# Persistent storage — K3s local-path provisioner
+# ─────────────────────────────────────────────────────────
+persistence:
+  enabled: true
+  storageClass: "local-path"    # K3s default provisioner
+  size: 10Gi
+
+# ─────────────────────────────────────────────────────────
+# NATS — embedded single-node for self-hosted installs
+# ─────────────────────────────────────────────────────────
+nats:
+  embedded: true                # Deploy a single-node NATS alongside the service
+  replicas: 1
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: "local-path"
+
+# ─────────────────────────────────────────────────────────
+# Database — external (self-managed PostgreSQL)
+# ─────────────────────────────────────────────────────────
+database:
+  external: true
+  # Set these via --set or a sealed secret:
+  # host: postgres.gridmind.svc.cluster.local
+  # port: 5432
+  # name: gridmind
+  # user: gridmind_app
+  # secretName: gridmind-db-secret   # must contain key: password
+
+# ─────────────────────────────────────────────────────────
+# Redis — external (self-managed Redis)
+# ─────────────────────────────────────────────────────────
+redis:
+  external: true
+  # host: redis.gridmind.svc.cluster.local
+  # port: 6379
+  # db: 0
+  # secretName: gridmind-redis-secret   # must contain key: password
+
+# ─────────────────────────────────────────────────────────
+# Environment secrets — injected from Kubernetes Secrets
+# Reference existing secrets rather than embedding values
+# ─────────────────────────────────────────────────────────
+envFrom:
+  - secretRef:
+      name: gridmind-app-secrets    # Must contain:
+                                    #   ANTHROPIC_API_KEY
+                                    #   STRIPE_SECRET_KEY
+                                    #   STRIPE_WEBHOOK_SECRET
+                                    #   GRIDMIND_JWT_SECRET
+                                    #   GRIDMIND_DATABASE_URL
+                                    #   GRIDMIND_REDIS_URL
+                                    #   GRIDMIND_NATS_URL
+
+# ─────────────────────────────────────────────────────────
+# Service — ClusterIP (Traefik handles external traffic)
+# ─────────────────────────────────────────────────────────
+service:
+  type: ClusterIP
+  port: 8000
+
+# ─────────────────────────────────────────────────────────
+# Pod disruption budget — allow rolling restarts
+# ─────────────────────────────────────────────────────────
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 0               # 0 for single-replica installs
+
+# ─────────────────────────────────────────────────────────
+# Metrics — Prometheus scraping via K3s built-in
+# ─────────────────────────────────────────────────────────
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: false              # set true if Prometheus Operator is installed
+
+# ─────────────────────────────────────────────────────────
+# Migrations — run as a K8s Job before deploying the app
+# ─────────────────────────────────────────────────────────
+migrations:
+  runOnDeploy: true             # Creates a Job that runs apply.sh before app starts
+  image: {}                     # Uses same image as the gateway service

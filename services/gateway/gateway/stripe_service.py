@@ -200,6 +200,26 @@ class MockStripeService:
             "status": "requires_payment_method",
         }
 
+    async def create_metered_price(
+        self,
+        unit_amount: int,
+        currency: str = "usd",
+        nickname: str | None = None,
+        product_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a mock metered Price (per agent decision)."""
+        return {
+            "id": f"price_mock_metered_{uuid4().hex[:12]}",
+            "object": "price",
+            "currency": currency,
+            "unit_amount": unit_amount,
+            "billing_scheme": "per_unit",
+            "recurring": {"interval": "month", "usage_type": "metered"},
+            "nickname": nickname or "Agent Decisions",
+            "product": product_id or f"prod_mock_{uuid4().hex[:8]}",
+            "active": True,
+        }
+
 
 # ---------------------------------------------------------------------------
 # Real Stripe service
@@ -299,6 +319,42 @@ class StripeService:
     async def create_setup_intent(self, customer_id: str) -> dict[str, Any]:
         """Create a SetupIntent for collecting payment details."""
         return dict(self._stripe.SetupIntent.create(customer=customer_id))
+
+    async def create_metered_price(
+        self,
+        unit_amount: int,
+        currency: str = "usd",
+        nickname: str | None = None,
+        product_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a metered Price for per-decision billing.
+
+        Args:
+            unit_amount: Price per unit in smallest currency unit (e.g. cents).
+            currency: ISO 4217 currency code.
+            nickname: Human-readable label for the price.
+            product_id: Existing Stripe product to attach to. Creates a new product if None.
+
+        Returns:
+            Stripe Price object as a dict.
+        """
+        params: dict[str, Any] = {
+            "currency": currency,
+            "unit_amount": unit_amount,
+            "billing_scheme": "per_unit",
+            "recurring": {"interval": "month", "usage_type": "metered"},
+        }
+        if nickname:
+            params["nickname"] = nickname
+        if product_id:
+            params["product"] = product_id
+        else:
+            product = self._stripe.Product.create(
+                name=nickname or "GridMind Agent Decisions",
+                description="Per-agent-decision metered billing — model cost + compute + tools",
+            )
+            params["product"] = product["id"]
+        return dict(self._stripe.Price.create(**params))
 
 
 # ---------------------------------------------------------------------------

@@ -132,3 +132,26 @@ class MarginCalculationResponse(BaseModel):
     monthly_cost: float
     margin_target: float
     customer_price: float
+
+
+class MeteredPriceCreate(BaseModel):
+    """Create a metered Stripe Price for per-decision billing."""
+
+    unit_amount: int = Field(ge=1, description="Price per decision in cents (e.g. 1 = $0.01)")
+    currency: str = Field(default="usd", min_length=3, max_length=3)
+    nickname: str | None = Field(default=None, max_length=255)
+    product_id: str | None = None
+
+
+class MeteredPriceResponse(BaseModel):
+    """Metered Stripe Price response."""
+
+    id: str
+    object: str = "price"
+    currency: str
+    unit_amount: int
+    billing_scheme: str
+    recurring: dict[str, Any]
+    nickname: str | None = None
+    product: str
+    active: bool

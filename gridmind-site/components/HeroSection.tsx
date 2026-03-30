@@ -24,12 +24,21 @@ export default function HeroSection() {
 
       setSubmitting(true);
       try {
-        // In dev, mock the API call — just show success
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        const gatewayUrl =
+          process.env["NEXT_PUBLIC_GATEWAY_URL"] ?? "https://gridmind-production.up.railway.app";
+        const res = await fetch(`${gatewayUrl}/api/v1/waitlist`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error((data as { detail?: string }).detail ?? "Signup failed.");
+        }
         setSubmitted(true);
         setEmail("");
-      } catch {
-        setError("Something went wrong. Please try again.");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       } finally {
         setSubmitting(false);
       }
