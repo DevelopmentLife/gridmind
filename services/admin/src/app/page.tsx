@@ -18,6 +18,7 @@ import {
 } from "@/lib/formatters";
 import { useAgentStore } from "@/stores/agentStore";
 import { useApprovalStore } from "@/stores/approvalStore";
+import { useCostStore } from "@/stores/costStore";
 import { useIncidentStore } from "@/stores/incidentStore";
 import { useTenantStore } from "@/stores/tenantStore";
 
@@ -102,6 +103,8 @@ export default function DashboardPage() {
 
   const activeTenants = useTenantStore((s) => s.getActiveTenantCount());
 
+  const costToday = useCostStore((s) => s.summary.totalCostUsd);
+
   const recentIncidents = incidents.filter((i) => i.status !== "resolved").slice(0, 4);
   const recentAgents = agents.filter((a) => a.status !== "healthy").slice(0, 5);
 
@@ -119,7 +122,7 @@ export default function DashboardPage() {
 
       {/* Top-level stats */}
       <section aria-label="Fleet health summary">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard
             label="Healthy Agents"
             value={`${healthyCount} / ${agents.length}`}
@@ -141,6 +144,13 @@ export default function DashboardPage() {
             subtext="Awaiting operator review"
             color={pendingApprovals > 5 ? "text-brand-amber" : "text-brand-text-primary"}
             href="/approvals"
+          />
+          <StatCard
+            label="Cost Today"
+            value={`$${costToday.toFixed(2)}`}
+            subtext="Agent decision costs"
+            color="text-brand-text-primary"
+            href="/cost"
           />
           <StatCard
             label="Active Tenants"

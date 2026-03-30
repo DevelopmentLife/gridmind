@@ -334,6 +334,76 @@ export interface FleetHealthSummary {
 }
 
 // ---------------------------------------------------------------------------
+// Cost Tracking Types
+// ---------------------------------------------------------------------------
+
+export const CostPeriod = {
+  DAY: "24h",
+  WEEK: "7d",
+  MONTH: "30d",
+} as const;
+export type CostPeriod = (typeof CostPeriod)[keyof typeof CostPeriod];
+
+export const ModelTier = {
+  HAIKU: "claude-haiku-4-5",
+  SONNET: "claude-sonnet-4-6",
+  OPUS: "claude-opus-4-6",
+} as const;
+export type ModelTier = (typeof ModelTier)[keyof typeof ModelTier];
+
+export interface AgentDecision {
+  decisionId: string;
+  agentName: string;
+  agentDisplayName: string;
+  model: ModelTier;
+  inputTokens: number;
+  outputTokens: number;
+  costUsd: number;
+  durationMs: number;
+  timestamp: string;
+  tenantId: string;
+}
+
+export interface CostSummary {
+  totalCostUsd: number;
+  totalDecisions: number;
+  avgCostPerDecision: number;
+  projectedMonthlyCostUsd: number;
+  periodLabel: string;
+}
+
+export interface BudgetStatus {
+  budgetUsd: number;
+  spentUsd: number;
+  percentUsed: number;
+  remainingUsd: number;
+  projectedOverage: boolean;
+}
+
+export interface DailyCost {
+  date: string;
+  label: string;
+  haikuCostUsd: number;
+  sonnetCostUsd: number;
+  opusCostUsd: number;
+  totalCostUsd: number;
+  totalDecisions: number;
+}
+
+export interface AgentCostBreakdown {
+  agentName: string;
+  agentDisplayName: string;
+  model: ModelTier;
+  decisions: number;
+  inputTokens: number;
+  outputTokens: number;
+  modelCostUsd: number;
+  computeCostUsd: number;
+  totalCostUsd: number;
+  avgCostPerDecision: number;
+}
+
+// ---------------------------------------------------------------------------
 // UI Types
 // ---------------------------------------------------------------------------
 

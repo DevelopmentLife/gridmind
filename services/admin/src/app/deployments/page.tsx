@@ -138,7 +138,7 @@ export default function DeploymentsPage() {
       <div>
         <h1 className="text-2xl font-bold text-brand-text-primary">Deployments</h1>
         <p className="text-brand-text-secondary text-sm mt-1">
-          All database deployments across all tenants
+          All agent team deployments across all tenants
         </p>
       </div>
 
