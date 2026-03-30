@@ -67,7 +67,7 @@ export default function EnginesSection() {
                 </h3>
 
                 <ul className="mt-4 space-y-2" role="list">
-                  {engine.features.map((feature) => (
+                  {engine.features.map((feature: string) => (
                     <li
                       key={feature}
                       className="flex items-center gap-2 text-sm text-slate-400"
