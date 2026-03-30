@@ -11,6 +11,8 @@ from gateway.routes.incidents import router as incidents_router
 from gateway.routes.onboarding import router as onboarding_router
 from gateway.routes.tenants import router as tenants_router
 from gateway.routes.users import router as users_router
+from gateway.routes.cost import router as cost_router
+from gateway.routes.waitlist import router as waitlist_router
 
 all_routers = [
     auth_router,
@@ -18,10 +20,12 @@ all_routers = [
     agents_router,
     tenants_router,
     billing_router,
+    cost_router,
     users_router,
     incidents_router,
     chat_router,
     onboarding_router,
+    waitlist_router,
 ]
 
 __all__ = ["all_routers"]
