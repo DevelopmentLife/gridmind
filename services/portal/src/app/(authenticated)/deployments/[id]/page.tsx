@@ -21,7 +21,7 @@ import type { AgentActivity } from "@/types";
 
 const MOCK_ACTIVITY: AgentActivity[] = [
   { activityId: "a1", agentName: "argus", displayName: "ARGUS", action: "Profiled workload spike", details: "QPS increased 23% over baseline — classifying as OLTP read-heavy burst", severity: "warning", timestamp: new Date(Date.now() - 2 * 60 * 1000).toISOString(), deploymentId: "deploy-001", deploymentName: "production-primary" },
-  { activityId: "a2", agentName: "oracle", displayName: "ORACLE", action: "Identified slow query", details: "Query plan regression on users JOIN orders — missing composite index", severity: "warning", timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(), deploymentId: "deploy-001", deploymentName: "production-primary" },
+  { activityId: "a2", agentName: "oracle", displayName: "ORACLE", action: "Identified slow agent task", details: "Task routing regression on users JOIN orders — missing composite index", severity: "warning", timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(), deploymentId: "deploy-001", deploymentName: "production-primary" },
   { activityId: "a3", agentName: "aegis", displayName: "AEGIS", action: "Security scan completed", details: "No anomalies detected. 0 unauthorized connection attempts.", severity: "success", timestamp: new Date(Date.now() - 12 * 60 * 1000).toISOString(), deploymentId: "deploy-001", deploymentName: "production-primary" },
   { activityId: "a4", agentName: "forge", displayName: "FORGE", action: "Index recommendation ready", details: "CREATE INDEX CONCURRENTLY idx_orders_user_created ON orders(user_id, created_at)", severity: "info", timestamp: new Date(Date.now() - 18 * 60 * 1000).toISOString(), deploymentId: "deploy-001", deploymentName: "production-primary" },
   { activityId: "a5", agentName: "convoy", displayName: "CONVOY", action: "Backup completed", details: "Full snapshot backup successful — 187GB to S3, verified integrity", severity: "success", timestamp: new Date(Date.now() - 35 * 60 * 1000).toISOString(), deploymentId: "deploy-001", deploymentName: "production-primary" },
@@ -108,7 +108,7 @@ export default function DeploymentDetailPage() {
       {m && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {[
-            { label: "Queries/sec", value: formatQps(m.qps), sparkline: MOCK_QPS_SPARKLINE, color: "#2563EB" },
+            { label: "Tasks/sec", value: formatQps(m.qps), sparkline: MOCK_QPS_SPARKLINE, color: "#2563EB" },
             { label: "P95 latency", value: formatLatency(m.p95LatencyMs), sparkline: MOCK_LATENCY_SPARKLINE, color: "#0EA5E9" },
             { label: "Connections", value: formatNumber(m.activeConnections), sparkline: MOCK_CONN_SPARKLINE, color: "#10B981" },
             { label: "CPU usage", value: formatPercent(m.cpuPercent), sparkline: [35, 38, 42, 44, 40, 43, 42], color: m.cpuPercent > 80 ? "#EF4444" : "#F59E0B" },

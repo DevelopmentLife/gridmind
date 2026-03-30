@@ -17,7 +17,7 @@ const MOCK_INCIDENTS: Record<string, Incident> = {
   "inc-001": {
     incidentId: "inc-001",
     title: "High P95 latency on analytics-warehouse",
-    description: "Query latency has exceeded 350ms P95 threshold for the past 15 minutes. ORACLE has identified 4 queries performing sequential scans on the events table (2.3B rows).",
+    description: "Agent task latency has exceeded 350ms P95 threshold for the past 15 minutes. ORACLE has identified 4 agent tasks performing sequential scans on the events table (2.3B rows).",
     severity: "high",
     status: "investigating",
     deploymentId: "deploy-002",
@@ -30,8 +30,8 @@ const MOCK_INCIDENTS: Record<string, Incident> = {
     updatedAt: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
     timeline: [
       { entryId: "t1", agentName: "argus", displayName: "ARGUS", action: "Anomaly detected", details: "P95 latency exceeded 350ms threshold — triggering incident creation", timestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString(), automated: true },
-      { entryId: "t2", agentName: "oracle", displayName: "ORACLE", action: "Query analysis started", details: "Scanning query history for last 30 minutes — 4 long-running sequential scans found", timestamp: new Date(Date.now() - 22 * 60 * 1000).toISOString(), automated: true },
-      { entryId: "t3", agentName: "sherlock", displayName: "SHERLOCK", action: "Root cause investigation initiated", details: "Analyzing table statistics, index usage, and query plan history", timestamp: new Date(Date.now() - 18 * 60 * 1000).toISOString(), automated: true },
+      { entryId: "t2", agentName: "oracle", displayName: "ORACLE", action: "Task analysis started", details: "Scanning task history for last 30 minutes — 4 long-running sequential scans found", timestamp: new Date(Date.now() - 22 * 60 * 1000).toISOString(), automated: true },
+      { entryId: "t3", agentName: "sherlock", displayName: "SHERLOCK", action: "Root cause investigation initiated", details: "Analyzing table statistics, index usage, and task execution history", timestamp: new Date(Date.now() - 18 * 60 * 1000).toISOString(), automated: true },
       { entryId: "t4", agentName: "sherlock", displayName: "SHERLOCK", action: "Hypothesis formed", details: "Index statistics stale on events(created_at) — last ANALYZE ran 8 days ago. Table has grown 40% since.", timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(), automated: true },
       { entryId: "t5", agentName: "forge", displayName: "FORGE", action: "Remediation proposed", details: "ANALYZE events; followed by CREATE INDEX CONCURRENTLY idx_events_created ON events(created_at) WHERE deleted_at IS NULL", timestamp: new Date(Date.now() - 3 * 60 * 1000).toISOString(), automated: true },
     ],

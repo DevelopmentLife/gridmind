@@ -145,7 +145,7 @@ export default function DeploymentsPage() {
       {!isLoading && deployments.length === 0 && (
         <EmptyState
           title="No deployments yet"
-          message="Connect your first database to start monitoring with AI agents."
+          message="Create your first deployment to start monitoring with AI agents."
           icon="🗄️"
           action={{ label: "Add deployment", onClick: () => router.push("/onboarding") }}
         />

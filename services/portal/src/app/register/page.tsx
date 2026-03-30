@@ -21,7 +21,7 @@ interface FormData {
 const STEPS: { key: Step; label: string; description: string }[] = [
   { key: "account", label: "Your account", description: "Create your login credentials" },
   { key: "org", label: "Your organization", description: "Name your team or company" },
-  { key: "deploy", label: "First deployment", description: "Connect your first database" },
+  { key: "deploy", label: "First deployment", description: "Configure your first agent team" },
 ];
 
 export default function RegisterPage() {
@@ -115,7 +115,7 @@ export default function RegisterPage() {
             <span className="text-white font-bold text-xl">G</span>
           </div>
           <h1 className="text-brand-text-primary text-2xl font-bold">Create your account</h1>
-          <p className="text-brand-text-muted text-sm mt-2">Start monitoring your databases with AI agents</p>
+          <p className="text-brand-text-muted text-sm mt-2">Start managing your infrastructure with AI agents</p>
         </div>
 
         {/* Step indicators */}
@@ -293,17 +293,17 @@ export default function RegisterPage() {
                   You can add connection details after signing up. These choices help us set up your agent fleet.
                 </p>
                 <div className="mb-4">
-                  <label htmlFor="dbEngine" className="label">Database engine</label>
+                  <label htmlFor="dbEngine" className="label">Agent framework</label>
                   <select
                     id="dbEngine"
                     value={form.dbEngine}
                     onChange={(e) => setField("dbEngine", e.target.value)}
                     className="input"
                   >
-                    <option value="postgresql">PostgreSQL</option>
-                    <option value="mysql">MySQL</option>
-                    <option value="redis">Redis</option>
-                    <option value="mongodb">MongoDB</option>
+                    <option value="postgresql">LangChain / LangGraph</option>
+                    <option value="mysql">CrewAI</option>
+                    <option value="redis">Claude Code Agent Teams</option>
+                    <option value="mongodb">Custom / BYO Framework</option>
                   </select>
                 </div>
                 <div className="mb-6">

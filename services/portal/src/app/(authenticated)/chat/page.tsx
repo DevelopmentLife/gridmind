@@ -7,7 +7,7 @@ import { useChatStore } from "@/stores/chatStore";
 
 const SUGGESTED_PROMPTS = [
   "Why is my analytics-warehouse P95 latency so high right now?",
-  "Show me the top 5 slowest queries across all deployments",
+  "Show me the top 5 slowest agent tasks across all deployments",
   "Is it safe to run VACUUM ANALYZE on production during business hours?",
   "What's the projected cost impact of upgrading to db.r7g.4xlarge?",
   "Explain what ARGUS found in its last workload profile",
@@ -44,7 +44,7 @@ export default function ChatPage() {
         <div>
           <h1 className="text-brand-text-primary text-lg font-bold">AI Chat</h1>
           <p className="text-brand-text-muted text-xs">
-            Ask questions about your database deployments, agent activity, or performance
+            Ask questions about your agent deployments, fleet activity, or performance
           </p>
         </div>
         {messages.length > 0 && (
@@ -71,7 +71,7 @@ export default function ChatPage() {
             </div>
             <h2 className="text-brand-text-primary text-xl font-bold mb-2">How can I help?</h2>
             <p className="text-brand-text-muted text-sm text-center mb-8 max-w-sm">
-              Ask me anything about your database deployments, agent findings, performance metrics, or get recommendations.
+              Ask me anything about your agent deployments, fleet findings, performance metrics, or get recommendations.
             </p>
             <div className="grid grid-cols-1 gap-2 w-full max-w-lg">
               {SUGGESTED_PROMPTS.map((prompt) => (
@@ -128,7 +128,7 @@ export default function ChatPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask about your databases, agents, or performance…"
+              placeholder="Ask about your agent fleet, deployments, or performance…"
               rows={1}
               className="w-full bg-transparent text-brand-text-primary text-sm placeholder-brand-text-muted resize-none focus:outline-none max-h-32 overflow-y-auto"
               aria-label="Chat message input"

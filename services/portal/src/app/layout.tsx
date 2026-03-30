@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: "%s | GridMind Portal",
   },
   description:
-    "GridMind customer portal — monitor your database deployments with 24 autonomous AI agents.",
+    "GridMind customer portal — manage your agent team deployments with 24 autonomous AI agents.",
   robots: { index: false, follow: false },
 };
 

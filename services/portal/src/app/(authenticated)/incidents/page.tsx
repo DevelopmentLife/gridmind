@@ -11,7 +11,7 @@ const MOCK_INCIDENTS: Incident[] = [
   {
     incidentId: "inc-001",
     title: "High P95 latency on analytics-warehouse",
-    description: "Query latency has exceeded 350ms P95 threshold for the past 15 minutes. ORACLE has identified 4 queries performing sequential scans on the events table (2.3B rows). SHERLOCK is investigating root cause.",
+    description: "Agent task latency has exceeded 350ms P95 threshold for the past 15 minutes. ORACLE has identified 4 agent tasks performing sequential scans on the events table (2.3B rows). SHERLOCK is investigating root cause.",
     severity: "high",
     status: "investigating",
     deploymentId: "deploy-002",

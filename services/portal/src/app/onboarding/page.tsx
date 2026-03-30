@@ -8,7 +8,7 @@ import { OnboardingStep } from "@/components/OnboardingStep";
 const STEPS = [
   {
     key: "connect",
-    title: "Connect your database",
+    title: "Connect your infrastructure",
     description: "Provide connection credentials so our agents can begin monitoring.",
   },
   {
@@ -19,7 +19,7 @@ const STEPS = [
   {
     key: "verify",
     title: "Verify health check",
-    description: "Confirm that agents are running and your database is healthy.",
+    description: "Confirm that agents are running and your infrastructure is healthy.",
   },
 ];
 
@@ -48,7 +48,7 @@ export default function OnboardingPage() {
       return;
     }
     if (!connectionString.startsWith("postgresql://") && !connectionString.startsWith("mysql://") && !connectionString.startsWith("redis://") && !connectionString.startsWith("mongodb://")) {
-      setConnectionError("Must be a valid database URI (postgresql://, mysql://, redis://, mongodb://).");
+      setConnectionError("Must be a valid connection URI (postgresql://, mysql://, redis://, mongodb://).");
       return;
     }
     completeStep("connect");
@@ -128,9 +128,9 @@ export default function OnboardingPage() {
           {/* Step 1: Connect */}
           {currentStep === "connect" && (
             <div>
-              <h2 className="text-brand-text-primary text-2xl font-bold mb-2">Connect your database</h2>
+              <h2 className="text-brand-text-primary text-2xl font-bold mb-2">Connect your infrastructure</h2>
               <p className="text-brand-text-muted text-sm mb-6">
-                GridMind agents need read access to your database. We recommend creating a dedicated monitoring user.
+                GridMind agents need access to your infrastructure. We recommend creating a dedicated monitoring user.
               </p>
               <form onSubmit={handleConnect} noValidate>
                 <div className="mb-4">
@@ -154,12 +154,12 @@ export default function OnboardingPage() {
                 <div className="bg-brand-slate/50 border border-brand-border-subtle rounded-lg p-4 mb-6">
                   <p className="text-brand-text-secondary text-xs font-medium mb-2">Required permissions</p>
                   <ul className="space-y-1 text-brand-text-muted text-xs">
-                    <li>• SELECT on all tables (for query analysis)</li>
-                    <li>• pg_stat_statements access (for query intelligence)</li>
+                    <li>• SELECT on all tables (for agent analysis)</li>
+                    <li>• pg_stat_statements access (for agent intelligence)</li>
                     <li>• pg_monitor role (for performance metrics)</li>
                   </ul>
                 </div>
-                <button type="submit" className="btn-primary">Connect database →</button>
+                <button type="submit" className="btn-primary">Connect infrastructure →</button>
               </form>
             </div>
           )}
@@ -169,7 +169,7 @@ export default function OnboardingPage() {
             <div>
               <h2 className="text-brand-text-primary text-2xl font-bold mb-2">Deploy your agents</h2>
               <p className="text-brand-text-muted text-sm mb-6">
-                12 AI agents specialized for your database will be provisioned. This takes about 30 seconds.
+                12 AI agents specialized for your infrastructure will be provisioned. This takes about 30 seconds.
               </p>
               {!completedSteps.has("deploy") && (
                 <>
@@ -212,7 +212,7 @@ export default function OnboardingPage() {
             <div>
               <h2 className="text-brand-text-primary text-2xl font-bold mb-2">Verify health check</h2>
               <p className="text-brand-text-muted text-sm mb-6">
-                Confirm your agents are running and can reach your database.
+                Confirm your agents are running and can reach your infrastructure.
               </p>
               {!verifySuccess ? (
                 <>
@@ -220,7 +220,7 @@ export default function OnboardingPage() {
                     <div className="space-y-3 text-sm">
                       {[
                         "Agent runtime connected",
-                        "Database connection reachable",
+                        "Infrastructure connection reachable",
                         "Metrics collection active",
                         "Event mesh subscribed",
                       ].map((check) => (
@@ -252,7 +252,7 @@ export default function OnboardingPage() {
                   <div className="bg-brand-green/10 border border-brand-green/30 rounded-xl p-6 mb-6 text-center">
                     <div className="text-4xl mb-3" aria-hidden="true">✅</div>
                     <h3 className="text-brand-green font-bold text-lg mb-1">All systems operational</h3>
-                    <p className="text-brand-text-muted text-sm">Your agents are live and monitoring your database.</p>
+                    <p className="text-brand-text-muted text-sm">Your agents are live and monitoring your infrastructure.</p>
                   </div>
                   <button
                     type="button"
