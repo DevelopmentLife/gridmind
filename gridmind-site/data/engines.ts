@@ -1,4 +1,9 @@
-import { Engine } from "@/types";
+interface Engine {
+  readonly name: string;
+  readonly icon: string;
+  readonly status: "available" | "coming_soon";
+  readonly features: readonly string[];
+}
 
 export const engines: readonly Engine[] = [
   {
