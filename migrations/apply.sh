@@ -28,6 +28,8 @@ MIGRATIONS=(
     "009_approvals.sql"
     "010_communications.sql"
     "011_rls_policies.sql"
+    "012_waitlist.sql"
+    "013_cost_attribution.sql"
 )
 
 echo "=== GridMind Database Migrations ==="
